@@ -15,7 +15,7 @@ const fetch_past_results = async(req, res)=>{
 		console.log(err);
 		return res.status(500).json({
 			success: false,
-			message: "Couldn't fetch results, try again
+			message: "Couldn't fetch results, try again"
 		});
 	}
 }
