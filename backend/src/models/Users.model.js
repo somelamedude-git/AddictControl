@@ -39,7 +39,17 @@ const addictSchema = new mongoose.Schema({
         type: String,
         enum: ['Hindi', 'English'],
         default: 'Hindi'
-    }
+    },
+    refreshtoken: [{
+        token: {
+            type: String,
+            required: true
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now()
+        }
+    }]
 }, {timestamps: true})
 
 const familyschema = new mongoose.Schema({
