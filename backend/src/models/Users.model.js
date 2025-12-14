@@ -15,6 +15,10 @@ const userschema = new mongoose.Schema({
         type: String,
         required: true
     },
+	name:{
+		type:String,
+		required: true
+	},
     refreshtoken: [{
         token: {
             type: String,
@@ -37,10 +41,6 @@ const addictSchema = new mongoose.Schema({
         ref: "Doctor",
         required: true
     }, 
-    name: {
-        type: String,
-        required: true
-    },
     age: {
         type: Number,
         required: true
@@ -58,11 +58,19 @@ const familyschema = new mongoose.Schema({
         ref: "Addict",
         required: true
     },
-})
+});
+
+const doctorSchema = new mongoose.Schema({
+	associated_organisation:{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Organisation'
+	}
+}
 
 const User = mongoose.model('User', userschema)
 const Addict = User.discriminator('Addict', addictSchema)
 const Family = User.discriminator('Family', familyschema); 
+const Doctor = User.discriminator('Doctor', doctorSchema);
 
 module.exports = {
     User,
