@@ -11,15 +11,25 @@ const userschema = new mongoose.Schema({
         type: String,
         required: true
     },
+    password: {
+        type: String,
+        required: true
+    },
+    refreshtoken: [{
+        token: {
+            type: String,
+            required: true
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now()
+        }
+    }]
 }, {timestamps: true, discriminatorKey: 'role'})
 
 const addictSchema = new mongoose.Schema({
     sobrierity: {
         type: Number,
-        required: true
-    },
-    password: {
-        type: String,
         required: true
     },
     doctor: {
@@ -40,20 +50,10 @@ const addictSchema = new mongoose.Schema({
         enum: ['Hindi', 'English'],
         default: 'Hindi'
     },
-    refreshtoken: [{
-        token: {
-            type: String,
-            required: true
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now()
-        }
-    }]
 }, {timestamps: true})
 
 const familyschema = new mongoose.Schema({
-    adict: {
+    addict: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Addict",
         required: true
@@ -63,3 +63,9 @@ const familyschema = new mongoose.Schema({
 const User = mongoose.model('User', userschema)
 const Addict = User.discriminator('Addict', addictSchema)
 const Family = User.discriminator('Family', familyschema); 
+
+module.exports = {
+    User,
+    Addict,
+    Family
+}
