@@ -14,6 +14,11 @@ const testSchema = new mongoose.Schema({
 	voice_score:{
 		type: Number,
 		default: 0
+	},
+	
+	overall_score:{
+		type: Number,
+		default: 0
 	}
 }, {timestamps: true});
 
