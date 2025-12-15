@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const testSchema = new mongoose.Schema({
 	alcoholic_id:{
-		type: mongoose.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		ref: "Alcohol"
 	},
 
