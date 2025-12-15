@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const {hashPasswords} = require('../utils/password.util.js');
 const userschema = new mongoose.Schema({
     phone: {
         type: String,
@@ -29,7 +29,21 @@ const userschema = new mongoose.Schema({
             default: Date.now()
         }
     }]
-}, {timestamps: true, discriminatorKey: 'role'})
+}, {timestamps: true, discriminatorKey: 'role'});
+
+userschema.pre("save", async function(next){
+	if(!this.isModified("password")) return next();
+	else{
+		try{
+			this.password = await hashPasswords(this.password);
+			next();
+		}
+		catch(err){
+			console.log(err);
+			next(err);
+		}
+	}
+});
 
 const addictSchema = new mongoose.Schema({
     sobrierity: {
@@ -53,10 +67,9 @@ const addictSchema = new mongoose.Schema({
 }, {timestamps: true})
 
 const familyschema = new mongoose.Schema({
-    addict: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Addict",
-        required: true
+    addict_member_email: {
+	    type: String,
+	    required: true
     },
 });
 
@@ -64,6 +77,11 @@ const doctorSchema = new mongoose.Schema({
 	associated_organisation:{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Organisation'
+	},
+
+	verification_docs:{
+		type: String,
+		required: true // url is required, memory consumption will be lesser
 	}
 }
 
