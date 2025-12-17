@@ -3,16 +3,11 @@ const app = express();
 require('dotenv').config()
 
 app.use(express.json({
-	    limit: "10kb",
-
+        limit: "10kb",
 }));
 
 app.use(helmet({
-	referrerPolicy: {policy: 'no-referrer'},
+    referrerPolicy: {policy: 'no-referrer'},
 }));
 
 app.use(compression());
-
-module.exports = {
-	app
-}
