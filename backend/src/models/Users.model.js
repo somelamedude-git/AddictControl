@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const {hashPasswords} = require('../utils/password.util.js');
+const bcrypt = require('bcrypt')
 const userschema = new mongoose.Schema({
     phone: {
         type: String,
@@ -31,28 +31,20 @@ const userschema = new mongoose.Schema({
     }]
 }, {timestamps: true, discriminatorKey: 'role'});
 
-userschema.pre("save", async function(next){
-	if(!this.isModified("password")) return next();
-	else{
-		try{
-			this.password = await hashPasswords(this.password);
-			next();
-		}
-		catch(err){
-			console.log(err);
-			next(err);
-		}
-	}
+userschema.pre('save', async function () {
+  if (!this.isModified('password')) return;
+
+  try {
+    const hashed = await bcrypt.hash(this.password, 10);
+    this.password = hashed;
+  } catch (err) {
+    throw err;
+  }
 });
 
 const addictSchema = new mongoose.Schema({
     sobrierity: {
         type: Number,
-        required: true
-    },
-    doctor: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Doctor",
         required: true
     }, 
     age: {
@@ -83,9 +75,9 @@ const doctorSchema = new mongoose.Schema({
 		type: String,
 		required: true // url is required, memory consumption will be lesser
 	}
-}
+})
 
-const User = mongoose.model('User', userschema)
+const User = mongoose.model('User', userschema);
 const Addict = User.discriminator('Addict', addictSchema)
 const Family = User.discriminator('Family', familyschema); 
 const Doctor = User.discriminator('Doctor', doctorSchema);
