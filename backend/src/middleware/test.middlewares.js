@@ -8,7 +8,7 @@ const givetest = async(req, res) => {
         const {id} = req.body
 
         const user = await Addict.findById(id);
-        if(!user)
+        if(!user || !id)
             return res.status(404).json({status: false, message: "User not found"})
 
         const testd = await Test.findOne({alcoholic_id: id}).sort({createdAt: -1})
@@ -32,11 +32,43 @@ const givetest = async(req, res) => {
 
 const submitanswer = async(req, res) => {
     try {
-        const {answer, question} = req.body;
+        const {answer, question, id} = req.body;
+        const user = await Addict.findById(id)
+        if(!id || !user || !answer || !question)
+            return res.status(404).json({status: false, message: "User not found"})
+
+        const test = await Test.findOne({alcoholic_id: id}).sort({createdAt:-1})
+        if(!test || test.attempted) 
+            return res.status(404).json({status: false, message: "No test requested"})
+
         const nanswer = await scoreanswer(question, answer)
+        test.logical_reasoning_score += nanswer.score
+        await test.save()
         return res.status(200).json({status: true, nanswer})
 
     } catch (err) {
+        console.log(err)
+        return res.status(500).json({status: false, message: "Internal server error"})
+    }
+}
+
+const storetest = async(req, res) => {
+    try {
+        const {id} = req.body
+        const user = await Addict.findById(id)
+        
+        if(!user || !id)
+            return res.status(404).json({status: false, message: "User not found"})
+
+        const test = await Test.findOne({alcoholic_id: id}).sort({createdAt:-1})
+        if(!test || test.attempted)
+            return res.status(401).json({status: false, message: "Test not available"})
+
+        test.attempted = true
+        await test.save()
+
+        return res.status(200).json({status: true, test})
+    } catch(err) {
         console.log(err)
         return res.status(500).json({status: false, message: "Internal server error"})
     }
@@ -62,5 +94,6 @@ const requesttest = async(req, res) => {
 module.exports = {
     givetest,
     submitanswer,
-    requesttest
+    requesttest, 
+    storetest
 }

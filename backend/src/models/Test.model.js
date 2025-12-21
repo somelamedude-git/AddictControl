@@ -11,6 +11,11 @@ const testSchema = new mongoose.Schema({
 		default: 0
 	},
 
+	attempted: {
+		type: Boolean,
+		default: false
+	},
+
 	voice_score:{
 		type: Number,
 		default: 0
