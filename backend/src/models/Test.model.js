@@ -11,6 +11,11 @@ const testSchema = new mongoose.Schema({
 		default: 0
 	},
 
+	attempted: {
+		type: Boolean,
+		default: false
+	},
+
 	voice_score:{
 		type: Number,
 		default: 0
@@ -24,3 +29,6 @@ const testSchema = new mongoose.Schema({
 
 const Test = mongoose.model('Test', testSchema);
 
+module.exports = {
+	Test
+}

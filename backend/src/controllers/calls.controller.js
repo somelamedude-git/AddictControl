@@ -50,7 +50,15 @@ const addict_portal_call = async(req, res)=>{
 	}
 } // to be connected with frontend through socket.on
 
+const accept_call = async(req, res)=>{
+	        return res.status(200).json({
+			                audio: process.env.AUDIO_LINK
+			        });
+}
+
 
 module.exports = {
-	request_phone_call
+	request_phone_call,
+	addict_portal_call,
+	accept_call
 }
