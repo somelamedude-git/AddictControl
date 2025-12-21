@@ -32,7 +32,23 @@ const request_phone_call = async(req, res)=>{
 	}
 }
 
-const accept_call = async(req, res)=>{
+const addict_portal_call = async(req, res)=>{
+	const {addict_email} = req.body;
+	try{
+		const addict = await Addict.findOne({email:addict_email}); // already verified
+
+		const socket_id = socket_array[addict._id.toString()];
+		io.to(socket_id).emit("incoming_call", {
+			audio: ""
+		});
+		res.json({
+			message: "called"
+		});
+	}
+	catch(error){
+		console.log('screw me');
+	}
+} // to be connected with frontend through socket.on
 
 
 module.exports = {

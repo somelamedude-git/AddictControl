@@ -7,7 +7,7 @@ function initSockets(server, pingTimeout, pingInterval){
 		cors: "*"
 	});
 
-	return socket;
+	return socket_;
 };
 
 
