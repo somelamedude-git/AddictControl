@@ -6,6 +6,8 @@ from silero_vad import load_silero_vad, read_audio, get_speech_timestamps
 from datasets import load_dataset, Audio
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 import joblib
+import os
+import tempfile
 
 vad_model = load_silero_vad()
 
