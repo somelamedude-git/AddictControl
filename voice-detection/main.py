@@ -5,6 +5,7 @@ import torch
 from silero_vad import load_silero_vad, read_audio, get_speech_timestamps
 from datasets import load_dataset, Audio
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
+import joblib
 
 vad_model = load_silero_vad()
 
@@ -31,5 +32,36 @@ def get_datapoint(mean, std, maxi, median, quantile):
 
     df = pd.DataFrame(data, columns=columns)
     return df
+
+clf_model = joblib.load('slur-detection.joblib')
+
+def prediction(audio_path):
+    mean, std, maxi, median, quantile = get_params(audio_path)
+    df = get_datapoint(mean, std, maxi, median, quantile)
+
+    prediction = clf_model.predict_proba(df)
+    return prediction
+
+app = Flask(__name__)
+
+@app.route('/predict', methods=["POST"]):
+    if "audio" not in request.files:
+        #throw an error
+
+    audio_file = request.files["audio"]
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+        audio_path = tmp.name
+        audio_file.save(audio_path)
+
+    try:
+        prediction_result = prediction(audio_path)
+        result = prediction_result.tolist()
+
+        return jsonify({
+            "prediction":result
+            })
+
+    finally:
+        os.remove(audio_path)
 
 
