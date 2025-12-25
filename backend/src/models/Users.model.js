@@ -9,6 +9,8 @@ const userschema = new mongoose.Schema({
     },
     email: {
         type: String,
+	trim: true,
+	lowercase: true,
         required: true
     },
     password: {
@@ -17,6 +19,8 @@ const userschema = new mongoose.Schema({
     },
 	name:{
 		type:String,
+		trim: true,
+		lowercase: true,
 		required: true
 	},
     refreshtoken: [{
@@ -45,6 +49,7 @@ userschema.pre('save', async function () {
 const addictSchema = new mongoose.Schema({
     sobrierity: {
         type: Number,
+	 default: 1,
         required: true
     }, 
     age: {
