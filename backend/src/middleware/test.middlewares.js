@@ -1,6 +1,6 @@
 const {generate} = require('../utils/generateques.util')
 const {Test} = require('../models/Test.model')
-const {scoreanswer} = require('../utils/testcheck.utils');
+const {scoretest} = require('../utils/testcheck.utils');
 const { Addict } = require('../models/Users.model');
 
 const givetest = async(req, res) => {
@@ -41,10 +41,17 @@ const submitanswer = async(req, res) => {
         if(!test || test.attempted) 
             return res.status(404).json({status: false, message: "No test requested"})
 
-        const nanswer = await scoreanswer(question, answer)
-        test.logical_reasoning_score += nanswer.score
+        const nanswer = await scoretest(question, answer)
+
+        let sum = 0;
+        nanswer.forEach((ans, id) => {
+            sum += ans.score
+        })
+
+        test.logical_reasoning_score += sum;
+
         await test.save()
-        return res.status(200).json({status: true, nanswer})
+        return res.status(200).json({status: true, nanswer, sum})
 
     } catch (err) {
         console.log(err)
