@@ -1,6 +1,8 @@
 const { Family } = require('../models/Users.model.js');
 const { Addict } = require('../models/Users.model.js');
+const { can_be_taken } = require('../utils/requests.util.js');
 const axios = require('axios');
+require('dotenv').config({path: '../.env'});
 
 const request_phone_call = async(req, res)=>{
 	const user_id = req.user._id;
@@ -50,12 +52,22 @@ const addict_portal_call = async(req, res)=>{
 	}
 } // to be connected with frontend through socket.on
 
-const accept_call = async(req, res)=>{
+const accept_call = async(req, res)=>{ // call test generation api here
+		try{
+		const user_id = req.user.id;
+		const user = await Addict.findById(user_id);
+		if(!user) return res.status(404).json({success: false, message: "User not found"});
+		
+		const response = await axios.post('/test/request', {user_id:user_id}); // now the test will go to the database with this request
+
 	        return res.status(200).json({
 			                audio: process.env.AUDIO_LINK
 			        });
+		}
+		catch(err){
+			// handle error here
+		}
 }
-
 
 module.exports = {
 	request_phone_call,
