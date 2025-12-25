@@ -20,6 +20,8 @@ const registration_family = async(req, res)=>{
 			});
 		}
 
+		addict_email = addict_email.toLowerCase().trim();
+
 		const addict = await Addict.findOne({email: addict_email});
 		if(!addict){
 			return res.status(404).json({
