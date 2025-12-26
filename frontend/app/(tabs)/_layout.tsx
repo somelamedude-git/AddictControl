@@ -11,8 +11,7 @@ const _layout = () => {
         tabBarIcon: ({ color, size }) => {
           let iconName: any;
 
-          if (route.name === 'home') iconName = 'home';
-          else if (route.name === 'test') iconName = 'clipboard';
+          if (route.name === 'test') iconName = 'clipboard';
           else if (route.name === 'profile') iconName = 'person';
 
           return <Ionicons name={iconName} size={size} color={color} />;

@@ -1,171 +1,131 @@
-import { StyleSheet,Dimensions } from 'react-native';
 
-const { width } = Dimensions.get('window');
+// styles/login.styles.js
+import { StyleSheet, Dimensions } from "react-native";
+import COLORS from "../constants/color";
+
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 16,
-    backgroundColor: '#00c9c8',
-  },
-
-  headerTitle: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-
-  content: {
+    flexGrow: 1,
+    backgroundColor: COLORS.background,
     padding: 20,
+    justifyContent: "center",
   },
+  topic:{
+    fontSize: 32,
+    fontWeight: "700",
+    color: COLORS.textPrimary,
+    marginBottom: 50,
+    textAlign: "center",
 
-  welcome: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#00bcd4',
+
+  },
+  scrollViewStyle: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  topIllustration: {
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 0,
+  },
+  illustrationImage: {
+    width: width * 0.9,
+    height: width * 0.5,
+  
+  },
+  card: {
+    backgroundColor: COLORS.cardBackground,
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: COLORS.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 2,
+    borderColor: COLORS.border,
+    marginTop: -24,
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "700",
+    color: COLORS.textPrimary,
     marginBottom: 8,
   },
-
   subtitle: {
-    fontSize: 13,
-    color: '#888',
-    marginBottom: 20,
+    fontSize: 16,
+    color: COLORS.textSecondary,
+    textAlign: "center",
   },
-
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 6,
-  },
-
-  input: {
-    backgroundColor: '#eaf7fb',
-    borderRadius: 12,
-    padding: 14,
+  formContainer: {
     marginBottom: 16,
   },
-
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#eaf7fb',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-  },
-
-  passwordInput: {
-    flex: 1,
-    paddingVertical: 14,
-  },
-
-  forgot: {
-    alignItems: 'flex-end',
-    marginTop: 8,
-  },
-
-  forgotText: {
-    color: '#00bcd4',
-    fontSize: 12,
-  },
-
-  loginButton: {
-    marginTop: 20,
-    backgroundColor: '#00c9c8',
-    paddingVertical: 14,
-    borderRadius: 25,
-    alignItems: 'center',
-  },
-
-  loginText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-
-  orText: {
-    textAlign: 'center',
-    marginVertical: 20,
-    color: '#aaa',
-  },
-
-  socialRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
+  inputGroup: {
     marginBottom: 20,
   },
-
-  signup: {
-    textAlign: 'center',
-    color: '#777',
+  label: {
+    fontSize: 14,
+    marginBottom: 8,
+    color: COLORS.textPrimary,
+    fontWeight: "500",
   },
-
-  signupLink: {
-    color: '#00bcd4',
-    fontWeight: '600',
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.inputBackground,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    paddingHorizontal: 12,
   },
-  topCurve: {
-    position: 'absolute',
-    top: -width * 0.3,
-    width: width,
-    height: width,
-    backgroundColor: '#f2f9fc',
-    borderBottomLeftRadius: width,
-    borderBottomRightRadius: width,
+  inputIcon: {
+    marginRight: 10,
   },
-  buttomCurve: {
-  position: 'absolute',
-  bottom: -width * 0.3,
-  width: width,
-  height: width,
-  backgroundColor: '#f2f9fc',
-  borderTopLeftRadius: width,
-  borderTopRightRadius: width,
-},
-
-   rightCurve: {
-    position: 'absolute',
-    top: -width * 0.3,
-    width: width,
-    height: width,
-    backgroundColor: '#f2f9fc',
-    borderBottomLeftRadius: width,
-    borderBottomRightRadius: width,
+  input: {
+    flex: 1,
+    height: 48,
+    color: COLORS.textDark,
   },
-   leftCurve: {
-    position: 'absolute',
-    top: -width * 0.3,
-    width: width,
-    height: width,
-    backgroundColor: '#f2f9fc',
-    borderBottomLeftRadius: width,
-    borderBottomRightRadius: width,
+  eyeIcon: {
+    padding: 8,
   },
-  logoContainer: {
-  position: 'absolute',
-  top: 120,
-  width: '100%',
-  alignItems: 'center',
-  zIndex: 5, },
-
-logo: {
-  width: 110,
-  height: 110,
-},
-
-logoText: {
-  marginTop: 8,
-  fontSize: 28,
-  letterSpacing: 3,
-  color: '#023047',
-  fontFamily: 'Versallis',
-},
-
+  button: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 16,
+    shadowColor: COLORS.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  buttonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 24,
+  },
+  footerText: {
+    color: COLORS.textSecondary,
+    marginRight: 5,
+  },
+  link: {
+    color: COLORS.primary,
+    fontWeight: "600",
+  },
 });
+
 export default styles;

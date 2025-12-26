@@ -3,7 +3,7 @@ import { useRef, useState, useCallback } from 'react';
 import { router, useFocusEffect } from 'expo-router';
 import QuestionCard from '@/components/questioncard';
 import AudioQuestionCard from '@/components/Audioquestionncard';
-import styles from '@/styles/auth.styles';
+import styles from '@/styles/profile.styles';
 
 const { width } = Dimensions.get('window');
 const TOTAL_TEXT_QUESTIONS = 5;
@@ -59,8 +59,6 @@ export default function TestScreen() {
   if (!started) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' ,}}>
-        <View style={styles.topCurve} />
-      <View style={styles.buttomCurve} />
         <TouchableOpacity
           onPress={() => setStarted(true)}
           style={{ padding: 20, backgroundColor: '#52d4f5ff', borderRadius: 10 }}
@@ -75,8 +73,6 @@ export default function TestScreen() {
   if (currentIndex >= TOTAL_TEXT_QUESTIONS) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', padding: 20 ,}}>
-      <View style={styles.topCurve} />
-      <View style={styles.buttomCurve} />
         <AudioQuestionCard
           onSubmit={(audioUri) => {
             console.log('Audio submitted:', audioUri);
@@ -100,10 +96,6 @@ export default function TestScreen() {
   return (
      
     <View style={{ flex: 1, justifyContent: 'center', padding: 30, }}>
-      <View style={styles.topCurve} />
-      <View style={styles.rightCurve} />
-      <View style={styles.leftCurve} />
-      <View style={styles.buttomCurve} />
       <QuestionCard
         question={currentQuestion.question}
         questionNumber={currentIndex + 1}

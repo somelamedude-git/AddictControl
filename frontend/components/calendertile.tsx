@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   dayNumber: {
     fontSize: 16,
     fontWeight: '600',
-    color:' #666',
+    color:'#666',
   },
 
   dayText: {
