@@ -31,7 +31,7 @@ const Login = () => {
     return;
   }
 
-  // ✅ Pass all three fields in correct order
+ 
   const result = await login(email, phone, password);
 
   if (!result.success) {
@@ -65,7 +65,7 @@ const Login = () => {
 
         <View style={styles.card}>
           <View style={styles.formContainer}>
-            {/* Phone input */}
+         
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Phone</Text>
               <View style={styles.inputContainer}>
@@ -86,7 +86,7 @@ const Login = () => {
               </View>
             </View>
 
-            {/* Email input */}
+         
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Email</Text>
               <View style={styles.inputContainer}>
@@ -108,7 +108,7 @@ const Login = () => {
               </View>
             </View>
 
-            {/* Password input */}
+          
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Password</Text>
               <View style={styles.inputContainer}>
@@ -139,7 +139,7 @@ const Login = () => {
               </View>
             </View>
 
-            {/* Login button */}
+           
             <TouchableOpacity
               style={styles.button}
               onPress={handleLogin}

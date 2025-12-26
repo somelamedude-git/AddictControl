@@ -1,5 +1,4 @@
 
-// styles/login.styles.js
 import { StyleSheet, Dimensions } from "react-native";
 import COLORS from "../constants/color";
 

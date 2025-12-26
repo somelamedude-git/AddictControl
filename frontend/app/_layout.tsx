@@ -12,19 +12,18 @@ export default function RootLayout() {
 
   const { user, token, isCheckingAuth, checkAuth } = useAuthStore();
 
-  // Run auth check once
+  
   useEffect(() => {
     checkAuth();
   }, []);
 
-  // Redirect based on auth state
   useEffect(() => {
     if (isCheckingAuth) return;
 
     const inLoginScreen =
       segments[0] === "(auth)" && segments[1] === "login";
 
-    // Not logged in → go to login
+    
     if (!token || !user) {
       if (!inLoginScreen) {
         router.replace("/(auth)");
@@ -32,7 +31,6 @@ export default function RootLayout() {
       return;
     }
 
-    // Logged in → role-based routing
     if (user.role === "doctor") {
       router.replace("/doctor");
     } else if (user.role === "family") {
@@ -42,7 +40,7 @@ export default function RootLayout() {
     }
   }, [token, user, isCheckingAuth, segments]);
 
-  // Loading screen while auth is being checked
+ 
   if (isCheckingAuth) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -55,10 +53,10 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <SafeScreen>
         <Stack screenOptions={{ headerShown: false }}>
-          {/* Auth group */}
+         
           <Stack.Screen name="(auth)" />
 
-          {/* Tabs */}
+         
           <Stack.Screen name="(tabs)" />
     
 

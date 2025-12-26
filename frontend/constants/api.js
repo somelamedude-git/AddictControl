@@ -1,2 +1,2 @@
 //if using the external device then 
-export const API_URL = "http://ur_ip:5000";
+export const API_URL = "http://192.168.29.127:5000";

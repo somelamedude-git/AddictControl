@@ -1,11 +1,12 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import COLORS from '@/constants/color';
 
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
   },
 
   skip: {

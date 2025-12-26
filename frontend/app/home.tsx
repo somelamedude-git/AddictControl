@@ -24,7 +24,7 @@ export default function Home() {
     />
     <Text style={styles.logoText}>SANTULAN</Text>
   </View>
- {/* show case theresult ofthe test herecode will me then will  show it*/ }
+ 
 
       <View style={styles.content}>
         <Text style={styles.title}>Remove Your{"\n"}Addiction with us</Text>
