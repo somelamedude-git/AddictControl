@@ -19,7 +19,7 @@ const multi_purpose_login = async(req, res)=>{
 			query = {phone:phone};
 		}
 
-		const user = await User.findOne(query);
+		const user = await User.findOne(query).lean();
 		if(!user) return res.status(401).json({success: false, message: "Invalid credentials"});
 		password = password.trim();
 		const is_correct = await bcrypt.compare(password, user.password);
@@ -29,7 +29,7 @@ const multi_purpose_login = async(req, res)=>{
 
 		const access_token = generateAccessToken(user);
 		const refresh_token = generateRefreshAccessToken(user);
-		const hashed_refresh_token = await hashRefreshToken(refresh_token);
+		const hashed_refresh_token = hashRefreshToken(refresh_token);
 
 		user.refreshtoken = hashed_refresh_token;
 		await user.save();

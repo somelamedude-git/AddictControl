@@ -24,15 +24,10 @@ const userschema = new mongoose.Schema({
 		lowercase: true,
 		required: true
 	},
-    refreshtoken: [{
-        token: {
-            type: String,
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now()
-        }
-    }]
+    refreshtoken: {
+	    type: String
+    }
+
 }, {timestamps: true, discriminatorKey: 'role'});
 
 userschema.pre('save', async function () {

@@ -12,22 +12,30 @@ const verifyJWT = async(req, res, next)=>{
 	}
 
 	try{
-		const user = await getUserFromToken(token);
-		if(!user){
-			return res.status(400).json({
+		const {id, role} = await getUserFromToken(token);
+		if(!id && !role){
+			return res.status(401).json({
 				success: false,
-				message: "User not found"
+				message: "Token error"
 			});
 		}
-		req.user = user;
+		req.user_id = id;
+		req.user_role = role;
 		next();
 	}
 	catch(err){
 		console.log(err);
-		return res.status(500).json({
+		if(err.name==='TokenExpiredError'){
+			return res.status(401).json({
+				success: false,
+				message: "Token Expired"
+			});
+		}
+		return res.status(401).json({
 			success: false,
-			message: "Some internal server error"
+			message: "Unauthorized access"
 		});
+		
 	}
 }
 
