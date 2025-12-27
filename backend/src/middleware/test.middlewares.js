@@ -84,12 +84,11 @@ const storetest = async(req, res) => {
 
 const requesttest = async(req, res) => {
     try {
-        const {phone} = req.body;
-        const user = await Addict.findOne({phone})
-        if(!user || !phone)
+        const {user_id} = req.params;
+        if(!user_id)
             return res.status(404).json({status: false, message: "User not found"})
 
-        const test = new Test({alcoholic_id: user._id});
+        const test = new Test({alcoholic_id: user_id});
         await test.save()
 
         return res.status(200).json({status: true, test});

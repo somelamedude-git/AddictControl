@@ -14,7 +14,7 @@ const process_audio = async(req, res)=>{
 			},
 		});
 
-		const test = await Test.find({alchoholic_id: user_id}).sort({createdAt: -1}).limit(1);
+		const test = await Test.find({alcoholic_id: user_id}).sort({createdAt: -1}).limit(1);
 		if(test.length<1) return res.status(401).json({success: false, message: "Either test or the user doesnt exist"});
 		test[0].voice_score = response.data.prediction;
 		await test[0].save();
