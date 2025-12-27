@@ -9,7 +9,7 @@ const registration_family = async(req, res)=>{
 		if(!addict_email || !member_phone_number || !password || !name || !member_email){
 			return res.status(400).json({
 				success: false,
-				message: "Kindly fill all the fields
+				message: "Kindly fill all the fields"
 			});
 		}
 
