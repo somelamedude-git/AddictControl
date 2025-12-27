@@ -19,6 +19,7 @@ const request_phone_call = async(req, res)=>{
 			});
 		}
 
+		// Check if the addict can take a test (rate limiting)
 		const canTakeTest = await can_be_taken(addict_email);
 		if(!canTakeTest){
 			return res.status(429).json({

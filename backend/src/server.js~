@@ -4,10 +4,12 @@ const { initSockets } = require('./sockets/index.js');
 const {getUserFromToken} = require('./utils/tokens.utils.js'); 
 const mongoose = require('mongoose');
 
+// Import routes
 const testroutes = require('./routes/test.routes');
 const authroutes = require('./routes/auth.routes');
 const callsroutes = require('./routes/calls.routes');
 
+// Mount routes
 app.use('/test', testroutes);
 app.use('/', authroutes);
 app.use('/calls', callsroutes);
@@ -52,6 +54,7 @@ io.on('connection', async (socket)=>{
 	}
 });
 
+// Database connection and server startup
 const DB_URI = process.env.MONGO_URI;
 
 console.log('Loaded MONGO_URI:', DB_URI);
