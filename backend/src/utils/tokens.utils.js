@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const {User} = require('../models/users.model.js');
+const {User} = require('../models/Users.model.js');
 
 const generateAccessToken =  (user) => {
     return jwt.sign(
@@ -28,7 +28,7 @@ const getUserFromToken = async(token)=>{
 	let decoded;
 
 	try{
-		decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+		decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
 		console.log('inside guft', decoded);
 		return {
 			id: decoded.id,
@@ -46,9 +46,9 @@ const refresh = async(req, res)=>{
 	if(!token) return res.status(401).json({message: "Refresh token expired"});
 	let decoded;
 	try{
-		decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+		decoded = jwt.verify(token, process.env.REFRESH_ACCESS_TOKEN);
 		const user = await User.findById(decoded.id.toString());
-		if(!user || !user.refreshToken){
+		if(!user || !user.refreshtoken){
 			return res.status(403).json({success: false, message: "Invalid session"});
 		}
 		const isMatch = await bcrypt.compare(user.refreshtoken, token);
