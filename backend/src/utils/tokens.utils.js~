@@ -24,7 +24,7 @@ const hashRefreshToken = async (token) => {
 };
 
 const getUserFromToken = async(token)=>{
-	if(!token) {console.log('Token not found'); return {id: null, role: null};}
+	if(!token) {console.log('Token not found'); return null;}
 	let decoded;
 
 	try{
