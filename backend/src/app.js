@@ -13,3 +13,5 @@ app.use(helmet({
 }));
 
 app.use(compression());
+
+module.exports = { app };

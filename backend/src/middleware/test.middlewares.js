@@ -1,11 +1,11 @@
 const {generate} = require('../utils/generateques.util')
 const {Test} = require('../models/Test.model')
-const {scoretest} = require('../utils/testcheck.utils');
+const {scoreanswer} = require('../utils/testcheck.utils');
 const { Addict } = require('../models/Users.model');
 
 const givetest = async(req, res) => {
     try {
-        const {id} = req.body
+        const id = req.user_id;
 
         const user = await Addict.findById(id);
         if(!user || !id)
@@ -32,7 +32,8 @@ const givetest = async(req, res) => {
 
 const submitanswer = async(req, res) => {
     try {
-        const {answer, question, id} = req.body;
+	const id = req.user_id;
+        const {answer, question} = req.body;
         const user = await Addict.findById(id)
         if(!id || !user || !answer || !question)
             return res.status(404).json({status: false, message: "User not found"})
@@ -41,7 +42,7 @@ const submitanswer = async(req, res) => {
         if(!test || test.attempted) 
             return res.status(404).json({status: false, message: "No test requested"})
 
-        const nanswer = await scoretest(question, answer)
+        const nanswer = await scoreanswer(question, answer)
 
         let sum = 0;
         nanswer.forEach((ans, id) => {
@@ -61,7 +62,7 @@ const submitanswer = async(req, res) => {
 
 const storetest = async(req, res) => {
     try {
-        const {id} = req.body
+        const id = req.user_id;
         const user = await Addict.findById(id)
         
         if(!user || !id)

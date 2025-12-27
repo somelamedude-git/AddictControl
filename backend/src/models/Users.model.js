@@ -42,7 +42,7 @@ userschema.pre('save', async function () {
 });
 
 const addictSchema = new mongoose.Schema({
-    sobrierity: {
+    sobriety: {
         type: Number,
 	 default: 1,
         required: true
