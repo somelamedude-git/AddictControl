@@ -1,4 +1,4 @@
-const Test = require('../models/Test.model');
+const {Test} = require('../models/Test.model');
 
 const fetch_past_results = async(req, res)=>{
 	let {limit} = req.body;

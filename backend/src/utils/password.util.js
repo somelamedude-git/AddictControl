@@ -8,10 +8,6 @@ const hashPasswords = async(password)=>{
 	}
 	catch(err){
 		console.log(err);
-		return res.status(500).json({
-			success: false,
-			message: "Internal error, try again"
-		});
 	}
 }
 

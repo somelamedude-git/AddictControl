@@ -1,10 +1,10 @@
-const { Doctor, Addict, Family} = require('../model/Users.model.js');
+const { Doctor, Addict, Family} = require('../models/Users.model.js');
 
 const registration_family = async(req, res)=>{
 	const user_id = req.user._id;
 	try{
 		const is_doctor = await Doctor.findById(user_id);
-		const { addict_email, member_phone_number, password, name, member_email } = req.body;
+		let { addict_email, member_phone_number, password, name, member_email } = req.body;
 
 		if(!addict_email || !member_phone_number || !password || !name || !member_email){
 			return res.status(400).json({
@@ -19,6 +19,8 @@ const registration_family = async(req, res)=>{
 				message: "You are not authorized to perform this action"
 			});
 		}
+
+		addict_email = addict_email.toLowerCase().trim();
 
 		const addict = await Addict.findOne({email: addict_email});
 		if(!addict){
@@ -52,8 +54,52 @@ const registration_family = async(req, res)=>{
 	}
 }
 
+const addict_registration = async(req, res)=>{
+	const user_id = req.user._id;
+
+	try{
+		const isDoctor = await Doctor.findById(user_id);
+		if(!isDoctor){
+			return res.status(401).json({
+				success: false,
+				message: "You are not authorized to perform this action"
+			});
+		}
+		
+		let { phone, email, password, name, age } = req.body;
+		if(!phone || !email || !password || !name || !age){
+			return res.status(400).json({
+				success: false,
+				message: "Kindly provide all the fields"
+			});
+		}
+
+		const addict = new Addict({
+			phone : phone,
+			email: email,
+			password: password,
+			name: name,
+			age: age
+		});
+
+		await addict.save();
+		return res.status(200).json({
+			success: true,
+			message: "User registered successfully"
+		});
+	}
+	catch(err){
+		console.log(error);
+		return res.status(500).json({
+			success: false,
+			message: "Some internal server error"
+		});
+	}
+}
+
 module.exports = {
-	registration_family
+	registration_family,
+	addict_registration
 }
 
 	
