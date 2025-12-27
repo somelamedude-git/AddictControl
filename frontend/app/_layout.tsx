@@ -2,45 +2,54 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useAuthStore } from "../store/authStore";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { ActivityIndicator, View } from "react-native";
 import SafeScreen from "@/components/SafeScreen";
 
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
+  const hasRedirected = useRef(false);
 
   const { user, token, isCheckingAuth, checkAuth } = useAuthStore();
 
-  
   useEffect(() => {
     checkAuth();
   }, []);
 
   useEffect(() => {
     if (isCheckingAuth) return;
+    if (hasRedirected.current) return;
 
-    const inLoginScreen =
-      segments[0] === "(auth)" && segments[1] === "login";
+    const rootSegment = segments[0];
 
-    
     if (!token || !user) {
-      if (!inLoginScreen) {
+      if (rootSegment !== "(auth)") {
+        hasRedirected.current = true;
         router.replace("/(auth)");
       }
       return;
     }
 
     if (user.role === "doctor") {
+      hasRedirected.current = true;
       router.replace("/doctor");
-    } else if (user.role === "family") {
-      router.replace("/family");
-    } else {
-      router.replace("/(tabs)/profile");
+      return;
     }
-  }, [token, user, isCheckingAuth, segments]);
 
- 
+    if (user.role === "family") {
+      hasRedirected.current = true;
+      router.replace("/family");
+      return;
+    }
+
+    
+    if (rootSegment !== "(tabs)") {
+      hasRedirected.current = true;
+      router.replace("/(tabs)/test");
+    }
+  }, [token, user, isCheckingAuth]);
+
   if (isCheckingAuth) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -53,14 +62,8 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <SafeScreen>
         <Stack screenOptions={{ headerShown: false }}>
-         
           <Stack.Screen name="(auth)" />
-
-         
           <Stack.Screen name="(tabs)" />
-    
-
-          {/* Role-based screens */}
           <Stack.Screen name="doctor" />
           <Stack.Screen name="family" />
         </Stack>

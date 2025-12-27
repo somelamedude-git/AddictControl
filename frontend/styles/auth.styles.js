@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   topic:{
     fontSize: 32,
     fontWeight: "700",
+    fontFamily:"JenWagnerCo.-VersaillesRegular.ttf",
     color: COLORS.textPrimary,
     marginBottom: 50,
     textAlign: "center",

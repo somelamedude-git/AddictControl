@@ -5,6 +5,7 @@ import QuestionCard from '@/components/questioncard';
 import AudioQuestionCard from '@/components/Audioquestionncard';
 import styles from '@/styles/profile.styles';
 
+
 const { width } = Dimensions.get('window');
 const TOTAL_TEXT_QUESTIONS = 5;
 
