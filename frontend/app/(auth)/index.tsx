@@ -15,6 +15,7 @@ import styles from "../../styles/auth.styles";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/color";
 import { useAuthStore } from "../../store/authStore";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Login = () => {
   const router = useRouter();
@@ -56,11 +57,13 @@ const Login = () => {
         {/* ILLUSTRATION */}
         <View style={styles.topIllustration}>
           <Image
-            source={require("../../assets/images/2.png")}
+            source={require("../../assets/images/3.png")}
             style={styles.illustrationImage}
             resizeMode="contain"
           />
+          
           <Text style={styles.topic}>SANTULAN</Text>
+          
         </View>
 
         <View style={styles.card}>
@@ -141,16 +144,25 @@ const Login = () => {
 
            
             <TouchableOpacity
-              style={styles.button}
-              onPress={handleLogin}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>Login</Text>
-              )}
-            </TouchableOpacity>
+  onPress={handleLogin}
+  disabled={isLoading}
+  activeOpacity={0.85}
+  style={{ marginTop: 16 }} // keep spacing here
+>
+  <LinearGradient
+    colors={['#52d4f5', '#28c3d7ff']}
+    start={[0, 0]}
+    end={[1, 1]}
+    style={styles.button}
+  >
+    {isLoading ? (
+      <ActivityIndicator color="#fff" />
+    ) : (
+      <Text style={styles.buttonText}>Login</Text>
+    )}
+  </LinearGradient>
+</TouchableOpacity>
+
           </View>
         </View>
       </View>

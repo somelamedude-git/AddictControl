@@ -167,12 +167,12 @@ const styles = StyleSheet.create({
 },
 
 monthDay: {
-  width: '14.28%', // 7 columns
+  width: '14.28%', 
   aspectRatio: 1,
   alignItems: 'center',
   justifyContent: 'center',
   borderRadius: 12,
-  backgroundColor: 'rgba(255,255,255,0.2)', // same as day
+  backgroundColor: 'rgba(255,255,255,0.2)', 
   marginBottom: 8,
 },
 
@@ -189,6 +189,68 @@ monthText: {
   fontWeight: '600',
   color: '#fff',
 },
+header: {
+  paddingTop: 60,
+  paddingBottom: 30,
+  alignItems: "center",
+  borderBottomLeftRadius: 30,
+  borderBottomRightRadius: 30,
+},
+
+avatar: {
+  width: 90,
+  height: 90,
+  borderRadius: 45,
+  marginBottom: 10,
+},
+
+name: {
+  fontSize: 22,
+  fontWeight: "bold",
+  color: "#fff",
+},
+
+email: {
+  fontSize: 14,
+  color: "#e0f7fa",
+},
+
+card: {
+  marginBlockStart:15,
+  margin: 3,
+  padding: 16,
+  borderRadius: 16,
+  elevation: 4,
+},
+
+cardRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: 12,
+},
+
+cardText: {
+  marginLeft: 10,
+  fontSize: 15,
+  color:COLORS.white,
+},
+
+logoutBtn: {
+  margin: 20,
+  backgroundColor: "#ff5252",
+  padding: 14,
+  borderRadius: 12,
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+},
+
+logoutText: {
+  color: "#fff",
+  fontWeight: "bold",
+  marginLeft: 8,
+},
+
 
 });
 export default styles;

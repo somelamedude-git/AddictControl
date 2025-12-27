@@ -1,30 +1,43 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { Tabs } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons';
+import { Tabs } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
-
-const _layout = () => {
+export default function TabsLayout() {
   return (
     <Tabs
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName: any;
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: '#1daec2ff',
+        tabBarInactiveTintColor: "gray",
+        animation: "shift",
+      }}
+    >
+      <Tabs.Screen
+        name="test"
+        options={{
+          title: "Test",
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? "clipboard" : "clipboard-outline"}
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
 
-          if (route.name === 'test') iconName = 'clipboard';
-          else if (route.name === 'profile') iconName = 'person';
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: '#00bcd4',
-        tabBarInactiveTintColor: 'gray',
-      })}>
-        <Tabs.Screen name="test" options={{ title: 'Test' }} />
-        <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
-        
-       
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? "person" : "person-outline"}
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Tabs>
-  )
+  );
 }
-
-export default _layout

@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Animated, Dimensions } from 'react-native';
-
-const { width } = Dimensions.get('window');
+import { View, Text, TextInput, TouchableOpacity, Animated } from 'react-native';
+import COLORS from '../constants/color';
+import { LinearGradient } from 'expo-linear-gradient';
 
 type QuestionCardProps = {
   question: string;
@@ -14,7 +14,7 @@ type QuestionCardProps = {
   slideAnim: Animated.Value;
 };
 
-export default function questioncard({
+export default function QuestionCard({
   question,
   questionNumber,
   totalQuestions,
@@ -23,46 +23,78 @@ export default function questioncard({
   onSubmit,
   slideAnim,
 }: QuestionCardProps) {
+  const isDisabled = !answer.trim();
+
   return (
     <Animated.View
       style={{
         transform: [{ translateX: slideAnim }],
-        backgroundColor: '#d1f4fdfb',
-        borderRadius: 16,
-        padding: 20,
-        elevation: 5,
+        backgroundColor: COLORS.cardBackground,
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: COLORS.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 2,
+    borderColor: COLORS.border,
+    marginTop: -24,
       }}
     >
-      <Text style={{ fontSize: 18, fontWeight: '600' }}>
+      {/* Question Number */}
+      <Text style={{ fontSize: 18, fontWeight: '600', color: COLORS.textPrimary }}>
         Question {questionNumber} of {totalQuestions}
       </Text>
 
-      <Text style={{ marginTop: 12, fontSize: 16 }}>{question}</Text>
+      {/* Question Text */}
+      <Text style={{ marginTop: 12, fontSize: 16, color: COLORS.textDark }}>{question}</Text>
 
+      {/* Answer Input */}
       <TextInput
         value={answer}
         onChangeText={onChangeAnswer}
         placeholder="Type your answer"
+        placeholderTextColor={COLORS.placeholderText}
         style={{
-          borderWidth: 1,
-          borderRadius: 8,
-          padding: 10,
-          marginTop: 20,
-          borderColor:'#00bcd4',
+          flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.inputBackground,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    paddingHorizontal: 12,
         }}
       />
       
+
+      {/* Submit Button */}
       <TouchableOpacity
         onPress={onSubmit}
-        disabled={!answer.trim()}
+        disabled={isDisabled}
         style={{
-          backgroundColor:'#00bcd4',
-          padding: 15,
-          marginTop: 20,
-          borderRadius: 8,
-        }}
+    borderRadius: 12,
+    overflow: 'hidden', // required for gradient rounded corners
+    marginTop: 20,
+  }}
       >
-        <Text style={{ color: '#f9f4f4ff', textAlign: 'center' }}>Submit Answer</Text>
+        <LinearGradient
+    colors={isDisabled ? ['#b3e5fc', '#a3dcf7ff'] : ['#52d4f5', '#1daec2ff']}
+    start={[0, 0]}
+    end={[1, 1]}
+    style={{ padding: 15, justifyContent: 'center', alignItems: 'center' }}
+  >
+    <Text
+      style={{
+        color: '#fff',
+        textAlign: 'center',
+        fontWeight: '600',
+        fontSize: 16,
+      }}
+    >
+      Submit Answer
+    </Text>
+  </LinearGradient>
       </TouchableOpacity>
     </Animated.View>
   );
