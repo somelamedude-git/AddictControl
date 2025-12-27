@@ -81,5 +81,6 @@ const scoretest = async(questions, answers) => {
 }
 
 module.exports = {
-    scoreanswer
+    scoreanswer,
+    scoretest
 }
