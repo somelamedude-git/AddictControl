@@ -24,19 +24,20 @@ const hashRefreshToken = async (token) => {
 };
 
 const getUserFromToken = async(token)=>{
-	if(!token) {console.log('Token not found'); return null;}
+	if(!token) {console.log('Token not found'); return {id: null, role: null};}
 	let decoded;
 
 	try{
 		decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-		const user = await User.findById(decoded._id.toString()).select('-password -refreshToken');
-		if(!user){ console.log('In guft, user not found'); return null;}
-		return user;
-		console.log(decoded);
+		console.log('inside guft', decoded);
+		return {
+			id: decoded.id,
+			role: decoded.role
+		};
 	}
 	catch(err){
 		console.log('inside get user from token', err);
-		return null;
+		throw err;
 	}
 }
 

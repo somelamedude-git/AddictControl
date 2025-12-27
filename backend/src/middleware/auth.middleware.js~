@@ -1,0 +1,36 @@
+const jwt = require('jsonwebtoken');
+const { User } = require('../models/users.model.js');
+const {getUserFromToken} = require('../utils/tokens.utils.js');
+
+const verifyJWT = async(req, res, next)=>{
+	const token = req.header("Authorization")?.replace("Bearer ", "");
+	if(!token){
+		return res.status(401).json({
+			success: false,
+			message: "Token expired"
+		});
+	}
+
+	try{
+		const user = await getUserFromToken(token);
+		if(!user){
+			return res.status(400).json({
+				success: false,
+				message: "User not found"
+			});
+		}
+		req.user = user;
+		next();
+	}
+	catch(err){
+		console.log(err);
+		return res.status(500).json({
+			success: false,
+			message: "Some internal server error"
+		});
+	}
+}
+
+module.exports = {
+	verifyJWT
+}

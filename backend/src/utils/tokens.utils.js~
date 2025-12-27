@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const {User} = require('../models/users.model.js');
 
 const generateAccessToken =  (user) => {
     return jwt.sign(
@@ -22,8 +23,28 @@ const hashRefreshToken = async (token) => {
     return bcrypt.hash(token, salt);
 };
 
+const getUserFromToken = async(token)=>{
+	if(!token) {console.log('Token not found'); return null;}
+	let decoded;
+
+	try{
+		decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+		console.log('inside guft', decoded);
+		return {
+			id: decoded.id,
+			role: decoded.role
+		};
+	}
+	catch(err){
+		console.log('inside get user from token', err);
+		throw err;
+	}
+}
+
+
 module.exports = {
     generateAccessToken,
     generateRefreshAccessToken,
-    hashRefreshToken
+    hashRefreshToken,
+	getUserFromToken
 }
