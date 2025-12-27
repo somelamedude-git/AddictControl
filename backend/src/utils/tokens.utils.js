@@ -51,7 +51,7 @@ const refresh = async(req, res)=>{
 		if(!user || !user.refreshtoken){
 			return res.status(403).json({success: false, message: "Invalid session"});
 		}
-		const isMatch = await bcrypt.compare(user.refreshtoken, token);
+		const isMatch = await bcrypt.compare(token, user.refreshtoken);
 		if(!isMatch){
 			return res.status(403).json({success: false, message: "Invalid token"});
 		}
