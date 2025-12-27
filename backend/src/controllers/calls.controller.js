@@ -4,6 +4,22 @@ const { can_be_taken } = require('../utils/requests.util.js');
 const axios = require('axios');
 require('dotenv').config({path: '../.env'});
 
+// Socket state management
+let socket_array = {};
+let io = null;
+
+const setSocketIO = (socketIO) => {
+    io = socketIO;
+};
+
+const addSocketConnection = (userId, socketId) => {
+    socket_array[userId] = socketId;
+};
+
+const removeSocketConnection = (userId) => {
+    delete socket_array[userId];
+};
+
 const request_phone_call = async(req, res)=>{
 	const user_id = req.user._id;
 	try{
@@ -18,8 +34,10 @@ const request_phone_call = async(req, res)=>{
 			});
 		}
 
-		const response = await axios.post('link_to_api(add later)', {addict_email}); // add headers later
-		console.log(response.data);
+		// For hackathon demo - mock the external API call
+		// const response = await axios.post('link_to_api(add later)', {addict_email}); 
+		console.log('Mock API call - sending call request for:', addict_email);
+		
 		return res.status(200).json({
 			success:true,
 			message: "Request for call sent"
@@ -54,7 +72,7 @@ const addict_portal_call = async(req, res)=>{
 
 const accept_call = async(req, res)=>{ // call test generation api here
 		try{
-		const user_id = req.user.id;
+		const user_id = req.user._id;  // Fixed: was req.user.id
 		const user = await Addict.findById(user_id);
 		if(!user) return res.status(404).json({success: false, message: "User not found"});
 		
@@ -65,7 +83,8 @@ const accept_call = async(req, res)=>{ // call test generation api here
 			        });
 		}
 		catch(err){
-			// handle error here
+			console.log(err);
+			return res.status(500).json({success: false, message: "Internal server error"});
 		}
 }
 

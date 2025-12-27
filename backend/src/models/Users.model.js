@@ -9,6 +9,9 @@ const userschema = new mongoose.Schema({
     },
     email: {
         type: String,
+	trim: true,
+	lowercase: true,
+	    index: true,
         required: true
     },
     password: {
@@ -17,18 +20,14 @@ const userschema = new mongoose.Schema({
     },
 	name:{
 		type:String,
+		trim: true,
+		lowercase: true,
 		required: true
 	},
-    refreshtoken: [{
-        token: {
-            type: String,
-            required: true
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now()
-        }
-    }]
+    refreshtoken: {
+	    type: String
+    }
+
 }, {timestamps: true, discriminatorKey: 'role'});
 
 userschema.pre('save', async function () {
@@ -45,6 +44,7 @@ userschema.pre('save', async function () {
 const addictSchema = new mongoose.Schema({
     sobrierity: {
         type: Number,
+	 default: 1,
         required: true
     }, 
     age: {
@@ -85,5 +85,6 @@ const Doctor = User.discriminator('Doctor', doctorSchema);
 module.exports = {
     User,
     Addict,
-    Family
+    Family,
+    Doctor
 }
