@@ -5,7 +5,7 @@ const { Addict } = require('../models/Users.model');
 
 const givetest = async(req, res) => {
     try {
-        const {id} = req.body
+        const id = req.user_id;
 
         const user = await Addict.findById(id);
         if(!user || !id)
@@ -32,7 +32,8 @@ const givetest = async(req, res) => {
 
 const submitanswer = async(req, res) => {
     try {
-        const {answer, question, id} = req.body;
+	const id = req.user_id;
+        const {answer, question} = req.body;
         const user = await Addict.findById(id)
         if(!id || !user || !answer || !question)
             return res.status(404).json({status: false, message: "User not found"})
@@ -61,7 +62,7 @@ const submitanswer = async(req, res) => {
 
 const storetest = async(req, res) => {
     try {
-        const {id} = req.body
+        const id = req.user_id;
         const user = await Addict.findById(id)
         
         if(!user || !id)
