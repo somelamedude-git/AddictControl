@@ -1,7 +1,7 @@
 const {User, Addict, Family} = require('../models/Users.model')
-const {generateAccessToken, generateRefreshAccessToken} = require('../utils/tokens.utils')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { generateAccessToken, generateRefreshAccessToken, hashRefreshToken } = require('../utils/tokens.utils');
 
 const multi_purpose_login = async(req, res)=>{
 	let {phone, email, password} = req.body;
@@ -19,7 +19,7 @@ const multi_purpose_login = async(req, res)=>{
 			query = {phone:phone};
 		}
 
-		const user = await User.findOne(query).lean();
+		const user = await User.findOne(query);
 		if(!user) return res.status(401).json({success: false, message: "Invalid credentials"});
 		password = password.trim();
 		const is_correct = await bcrypt.compare(password, user.password);
@@ -27,10 +27,19 @@ const multi_purpose_login = async(req, res)=>{
 		if(!is_correct) return res.status(401).json({success: false, message: "Invalid credentials"});
 		const role = user.role;
 
+		const access_token = generateAccessToken(user);
+		const refresh_token = generateRefreshAccessToken(user);
+		const hashed_refresh_token = await hashRefreshToken(refresh_token);
+
+		user.refreshtoken = hashed_refresh_token;
+		await user.save();
+
 		return res.status(200).json({
 			success: true,
 			message: "Logged in",
-			role: role
+			role: role,
+			refreshToken : refresh_token,
+			accessToken: access_token
 		});
 	}
 	catch(err){
