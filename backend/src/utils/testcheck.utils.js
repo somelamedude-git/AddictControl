@@ -71,6 +71,16 @@ const scoreanswer = async (question, answer) => {
     }
 }
 
+const scoretest = async(questions, answers) => {
+    const score = await Promise.all(
+        questions.map((question, id) =>
+            scoreanswer(question, answers[id])
+        )
+    );
+    return score;
+}
+
 module.exports = {
-    scoreanswer
+    scoreanswer,
+    scoretest
 }

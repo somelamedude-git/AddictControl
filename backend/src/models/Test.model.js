@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const testSchema = new mongoose.Schema({
 	alcoholic_id:{
 		type: mongoose.Schema.Types.ObjectId,
-		ref: "Alcohol"
+		ref: "Addict"
 	},
 
 	logical_reasoning_score:{
