@@ -1,4 +1,5 @@
 const { Doctor, Addict, Family} = require('../models/Users.model.js');
+const { send_mail } = require('../utils/mail.utils.js');
 
 const registration_family = async(req, res)=>{
 	const user_id = req.user._id;
@@ -39,6 +40,13 @@ const registration_family = async(req, res)=>{
 		});
 
 		await member.save();
+
+		try {
+			await send_mail(member_email);
+			console.log(`Welcome email sent to family member: ${member_email}`);
+		} catch (emailError) {
+			console.error('Failed to send welcome email to family member:', emailError);
+		}
 
 		return res.status(200).json({
 			success: true,
@@ -83,6 +91,14 @@ const addict_registration = async(req, res)=>{
 		});
 
 		await addict.save();
+
+		try {
+			await send_mail(email);
+			console.log(`Welcome email sent to addict: ${email}`);
+		} catch (emailError) {
+			console.error('Failed to send welcome email to addict:', emailError);
+		}
+
 		return res.status(200).json({
 			success: true,
 			message: "User registered successfully"
