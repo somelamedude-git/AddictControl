@@ -48,6 +48,11 @@ const process_audio = async(req, res)=>{
 			message: "Some internal server error"
 		});
 	}
+	finally{
+		if (req.file?.path && fs.existsSync(req.file.path)) {
+			    fs.unlinkSync(req.file.path);
+			  }
+	}
 }
 
 module.exports = {
