@@ -1,9 +1,8 @@
 const { Family } = require('../models/Users.model.js');
 const { Addict } = require('../models/Users.model.js');
 const axios = require('axios');
-require('dotenv').config({'../env'});
-const {io} = require('../server.js');
 const { can_be_taken } = require('../utils/requests.util.js');
+const { getSocketIO } = require('../utils/socket.util.js');
 
 const request_phone_call = async(req, res)=>{
 	const user_id = req.user_id;
@@ -29,6 +28,7 @@ const request_phone_call = async(req, res)=>{
 
 		const alc_id = alcoholic._id;
 
+		const io = getSocketIO();
 		io.to(`user:${alc_id}`).emit("incoming_call", {
 			message: "Incoming call from family member",
 			caller_id: user_id,

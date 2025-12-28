@@ -3,6 +3,7 @@ const { createServer } = require('http');
 const { initSockets } = require('./sockets/index.js');
 const {getUserFromToken} = require('./utils/tokens.utils.js'); 
 const mongoose = require('mongoose');
+const { setSocketIO } = require('./utils/socket.util.js');
 
 const testroutes = require('./routes/test.routes');
 const authroutes = require('./routes/auth.routes');
@@ -14,6 +15,8 @@ app.use('/calls', callsroutes);
 
 const httpServer = createServer(app);
 const io = initSockets(httpServer, 60000, 25000);
+
+setSocketIO(io);
 
 io.on('connection', async (socket)=>{
 	try {
@@ -77,10 +80,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-module.exports = {
-	io
-}
-
-
-
