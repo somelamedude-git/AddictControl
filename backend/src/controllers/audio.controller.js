@@ -2,12 +2,30 @@ const fs = require('fs');
 const FormData = require('form-data');
 const axios = require('axios');
 const { Test } = require('../models/Test.model.js');
+const s3 = require('../s3.js');
 
 const process_audio = async(req, res)=>{
 	try{
 		const form = new FormData();
 		const user_id = req.user_id;
-		form.append('file', fs.createReadStream(req.file.path));
+
+		const s3FileURL = req.file.location;
+		const s3Key = req.file.key;
+		const bucketName = req.file.bucket;
+
+		const s3Object = s3.getObject({
+			Bucket: bucketName,
+			Key: s3Key
+		});
+
+		const s3Stream = s3Object.createReadStream();
+
+		const form = new FormData();
+		        form.append('file', s3Stream, {
+				            filename: req.file.originalname,
+				            contentType: req.file.contentType
+				        });
+
 		const response = await axios.post('/python_processing_api', form, {
 			headers:{
 				...form.getHeaders(),
@@ -29,11 +47,6 @@ const process_audio = async(req, res)=>{
 			success: false,
 			message: "Some internal server error"
 		});
-	}
-	finally{
-		if (req.file?.path && fs.existsSync(req.file.path)) {
-			    fs.unlinkSync(req.file.path);
-			  }
 	}
 }
 
