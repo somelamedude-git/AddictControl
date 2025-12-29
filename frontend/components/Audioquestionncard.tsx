@@ -1,84 +1,58 @@
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Audio } from 'expo-av';
-import { useEffect, useState } from 'react';
-import COLORS from '@/constants/color';
-import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Audio } from "expo-av";
+import { LinearGradient } from "expo-linear-gradient";
+import { useAuthStore } from "@/store/authStore";
+import COLORS from "@/constants/color";
+import { API_URL } from "@/constants/api";
 
 type Props = {
-  onSubmit: (uri: string) => void;
+  onSubmit: (audioUri: string) => void;
 };
 
 export default function AudioQuestionCard({ onSubmit }: Props) {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [audioUri, setAudioUri] = useState<string | null>(null);
-  const [prompt, setPrompt] = useState<string>('Loading prompt...');
+  const [prompt, setPrompt] = useState<string>("Loading prompt...");
+  const [loading, setLoading] = useState(false);
+
+  const { user } = useAuthStore();
+
+ 
+  const FALLBACK_PROMPTS = [
+    "The sun rises in the east and sets in the west.",
+    "I feel calm when I take a deep breath.",
+    "Learning new skills helps me grow every day.",
+    "Speaking clearly makes communication easier.",
+    "Today is a good day to stay positive.",
+  ];
 
   useEffect(() => {
-  fetchPrompt();
-}, []);
+    fetchPrompt();
+  }, []);
 
-  const FALLBACK_PROMPTS = [
-  "The sun rises in the east and sets in the west.",
-  "I feel calm when I take a deep breath.",
-  "Learning new skills helps me grow every day.",
-  "Speaking clearly makes communication easier.",
-  "Today is a good day to stay positive.",
-];
-
-const fetchPrompt = async () => {
-  try {
-    const response = await fetch('https://zenquotes.io/api/random', {
-      headers: {
-        Accept: 'application/json',
-      },
-    });
-
-    const text = await response.text();
-
-    
-    let data;
+  const fetchPrompt = async () => {
     try {
-      data = JSON.parse(text);
+      const res = await fetch("https://zenquotes.io/api/random");
+      const data = await res.json();
+      if (Array.isArray(data) && data[0]?.q) {
+        setPrompt(data[0].q);
+      } else throw new Error();
     } catch {
-      throw new Error('Non-JSON response');
+      setPrompt(FALLBACK_PROMPTS[Math.floor(Math.random() * FALLBACK_PROMPTS.length)]);
     }
+  };
 
-    if (
-      Array.isArray(data) &&
-      data.length > 0 &&
-      typeof data[0]?.q === 'string'
-    ) {
-      setPrompt(data[0].q);
-      return;
-    }
-
-    throw new Error('Invalid response shape');
-  } catch (error) {
-    console.log('Prompt fetch failed, using fallback:', error);
-
-    const randomFallback =
-      FALLBACK_PROMPTS[
-        Math.floor(Math.random() * FALLBACK_PROMPTS.length)
-      ];
-
-    setPrompt(randomFallback);
-  }
-};
-
-
-
+ 
   const startRecording = async () => {
     try {
       await Audio.requestPermissionsAsync();
-      await Audio.setAudioModeAsync({ allowsRecordingIOS: true });
+      await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
 
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
-
+      const { recording } = await Audio.Recording.createAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
       setRecording(recording);
     } catch (err) {
-      console.log('Failed to start recording', err);
+      console.log("Recording start failed:", err);
     }
   };
 
@@ -87,72 +61,49 @@ const fetchPrompt = async () => {
 
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI();
-
-    setAudioUri(uri || null);
+    setAudioUri(uri ?? null);
     setRecording(null);
   };
 
-  return (
-    <View
-      style={{
-        backgroundColor: COLORS.cardBackground,
-        borderRadius: 16,
-        padding: 24,
-        shadowColor: COLORS.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4,
-        borderWidth: 2,
-        borderColor: COLORS.border,
-      }}
-    >
-      <Text style={{ fontSize: 18, fontWeight: '700', marginBottom: 10 }}>
-        Read Aloud
-      </Text>
+  
+  const submitAudio = async () => {
+    if (!audioUri) return;
+    setLoading(true);
 
-      {/*  Dynamic Prompt */}
-      <Text
-        style={{
-          fontSize: 16,
-          lineHeight: 24,
-          color: COLORS.textPrimary,
-          marginBottom: 20,
-        }}
-      >
-        “{prompt}”
-      </Text>
+    try {
+      // Send URI directly to parent
+      onSubmit(audioUri);
+    } catch (err) {
+      console.log("Audio submission failed:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+ 
+  return (
+    <View style={{ backgroundColor: COLORS.cardBackground, borderRadius: 16, padding: 24, elevation: 4 }}>
+      <Text style={{ fontSize: 18, fontWeight: "700", marginBottom: 10 }}>Read Aloud</Text>
+      <Text style={{ fontSize: 16, marginBottom: 20 }}>“{prompt}”</Text>
 
       <TouchableOpacity
         onPress={recording ? stopRecording : startRecording}
-        style={{
-          backgroundColor: recording ? '#dc2626' : '#1daec2ff',
-          padding: 14,
-          borderRadius: 10,
-        }}
+        style={{ backgroundColor: recording ? "#dc2626" : "#1daec2ff", padding: 14, borderRadius: 10 }}
       >
-        <Text style={{ color: '#fff', textAlign: 'center', fontWeight: '600' }}>
-          {recording ? 'Stop Recording' : 'Start Recording'}
+        <Text style={{ color: "#fff", textAlign: "center", fontWeight: "600" }}>
+          {recording ? "Stop Recording" : "Start Recording"}
         </Text>
       </TouchableOpacity>
 
       {audioUri && (
-        <TouchableOpacity
-          onPress={() => onSubmit(audioUri)}
-          style={{ marginTop: 20, borderRadius: 10, overflow: 'hidden' }}
-        >
-          <LinearGradient
-            colors={['#52d4f5', '#1daec2ff']}
-            start={[0, 0]}
-            end={[1, 1]}
-            style={{ padding: 15, alignItems: 'center' }}
-          >
-            <Text style={{ color: '#fff', fontWeight: '600' }}>
-              Submit Audio Answer
-            </Text>
+        <TouchableOpacity onPress={submitAudio} disabled={loading} style={{ marginTop: 20 }}>
+          <LinearGradient colors={["#52d4f5", "#1daec2ff"]} style={{ padding: 15, borderRadius: 10, alignItems: "center" }}>
+            {loading ? <ActivityIndicator color="#fff" /> : <Text style={{ color: "#fff", fontWeight: "600" }}>Submit Audio Answer</Text>}
           </LinearGradient>
         </TouchableOpacity>
       )}
     </View>
   );
 }
+
+  

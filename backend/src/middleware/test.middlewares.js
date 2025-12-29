@@ -42,7 +42,9 @@ const submitanswer = async(req, res) => {
         if(!test || test.attempted) 
             return res.status(404).json({status: false, message: "No test requested"})
 
-        const nanswer = await scoreanswer(question, answer)
+        let nanswer = await scoreanswer(question, answer)
+
+        if (!Array.isArray(nanswer)) nanswer = [nanswer]
 
         let sum = 0;
         nanswer.forEach((ans, id) => {

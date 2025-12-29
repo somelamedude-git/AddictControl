@@ -1,7 +1,7 @@
 const {Test} = require('../models/Test.model');
 
 const fetch_past_results = async(req, res)=>{
-	let {limit} = req.body;
+	let {limit} = req.query;
 	limit = Math.min(Number(limit)||5, 10);
 	const user_id = req.user_id;
 	try{

@@ -1,6 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../constants/api";
 import { create } from "zustand";
+import { jwtDecode } from "jwt-decode";
+import { api } from "../lib/api";
+
 
 export const useAuthStore = create((set) => ({
   user: null,
@@ -12,43 +15,41 @@ export const useAuthStore = create((set) => ({
   set({ isLoading: true });
 
   try {
-    if (!email || !phone || !password) {
-      throw new Error("Please enter email, phone, and password");
+    if ((!email && !phone) || !password) {
+      throw new Error("Email or phone and password required");
     }
 
     const body = { email, phone, password };
 
-    console.log("Sending login request:", body);
+    const { data } = await api.post("/login", body);
 
-    const response = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    const decoded = jwtDecode(data.accessToken);
 
-    const text = await response.text();
-    console.log("Response text:", text);
-    const data = JSON.parse(text);
+    const userData = {
+      id: decoded.id,
+      role: decoded.role,
+    };
 
-    if (!response.ok) {
-      throw new Error(data.message || "Login failed");
-    }
-
-    await AsyncStorage.setItem("token", data.accesstoken);
-    await AsyncStorage.setItem("user", JSON.stringify(data.userData));
+    await AsyncStorage.setItem("token", data.accessToken);
+    await AsyncStorage.setItem("user", JSON.stringify(userData));
 
     set({
-      token: data.accesstoken,
-      user: data.userData,
+      token: data.accessToken,
+      user: userData,
       isLoading: false,
     });
+   console.log("JWT TOKEN:", data.accessToken);
 
-    return { success: true, user: data.userData };
-  } catch (error) {
+    return { success: true, user: userData };
+  } catch (err) {
     set({ isLoading: false });
-    return { success: false, error: error.message };
+    return {
+      success: false,
+      error: err.response?.data?.message || err.message,
+    };
   }
 },
+
 
   logout: async () => {
     await AsyncStorage.removeItem("token");
@@ -57,17 +58,30 @@ export const useAuthStore = create((set) => ({
   },
 
   checkAuth: async () => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-      const userJson = await AsyncStorage.getItem("user");
+  try {
+    const token = await AsyncStorage.getItem("token");
+    const userJson = await AsyncStorage.getItem("user");
 
-      set({
-        token,
-        user: userJson ? JSON.parse(userJson) : null,
-      });
-    } finally {
-      set({ isCheckingAuth: false });
+    if (!token || !userJson) {
+      set({ token: null, user: null });
+      return;
     }
-  },
+
+    const decoded = jwtDecode(token);
+    if (decoded.exp * 1000 < Date.now()) {
+      await AsyncStorage.multiRemove(["token", "user"]);
+      set({ token: null, user: null });
+      return;
+    }
+
+    set({
+      token,
+      user: JSON.parse(userJson),
+    });
+  } finally {
+    set({ isCheckingAuth: false });
+  }
+},
+
 }));
 

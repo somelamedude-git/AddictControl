@@ -20,19 +20,21 @@ import { LinearGradient } from "expo-linear-gradient";
 const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState(""); // Added phone input
+  const [phone, setPhone] = useState(""); 
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const { login, isLoading } = useAuthStore();
 
   const handleLogin = async () => {
-  if (!email || !phone || !password) {
-    Alert.alert("Error", "Please enter email, phone, and password");
-    return;
-  }
+ if ((!email && !phone) || !password) {
+  Alert.alert(
+    "Error",
+    "Please enter either email or phone, and password"
+  );
+  return;
+}
 
- 
   const result = await login(email, phone, password);
 
   if (!result.success) {
@@ -40,7 +42,6 @@ const Login = () => {
     return;
   }
 
-  // Redirect based on role
   const role = result.user.role;
   if (role === "doctor") router.replace("/doctor");
   else if (role === "family") router.replace("/family");
@@ -54,7 +55,7 @@ const Login = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.container}>
-        {/* ILLUSTRATION */}
+       
         <View style={styles.topIllustration}>
           <Image
             source={require("../../assets/images/3.png")}

@@ -1,7 +1,7 @@
 const { Family } = require('../models/Users.model.js');
 const { Addict } = require('../models/Users.model.js');
 const axios = require('axios');
-require('dotenv').config({'../env'});
+require('dotenv').config({path: '../../env'});
 const {io} = require('../server.js');
 const { can_be_taken } = require('../utils/requests.util.js');
 
