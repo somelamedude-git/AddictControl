@@ -1,16 +1,22 @@
+const multer_s3 = require('multer-s3');
 const multer = require('multer');
+const { S3Client } = require('@aws-sdk/client-s3');
 
-const storage = multer.diskStorage({
-	destination: function(req, file, cb){
-		cb(null, '/uploads');
-	},
-	filename: function(req, file, cb){
-		const uniqueSuffix = Date.now() + '-' + Math.round(Math.random()*1E-9);
-		cb(null, uniqueSuffix + '-' + file.originalname);
-	}
+const s3 = require('../s3.js');
+
+const upload = multer({
+	storage: multer_s3({
+		s3: s3,
+		bucket: process.env.BUCKET_NAME,
+		metadata: function(req, file, cb){
+			cb(null, {fieldName: file.fieldname});
+		},
+		key: function(req, file, cb){
+			cb(null, Date.now().toString())
+		}
+	})
 });
 
-const upload = multer({storage: storage});
 module.exports = {
 	upload
 }
