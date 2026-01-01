@@ -1,15 +1,15 @@
 const {generate} = require('../utils/generateques.util')
 const {Test} = require('../models/Test.model')
-const {scoretest} = require('../utils/testcheck.utils');
+const {scoreanswer} = require('../utils/testcheck.utils');
 const { Addict } = require('../models/Users.model');
 
 const givetest = async(req, res) => {
     try {
-        const {id} = req.body
+        const id = req.user_id;
 
         const user = await Addict.findById(id);
         if(!user || !id)
-            return res.status(404).json({status: false, message: "User not found"})
+            return res.status(404).json({success: false, message: "User not found"})
 
         const testd = await Test.findOne({alcoholic_id: id}).sort({createdAt: -1})
         const createdAt = new Date(testd.createdAt)
@@ -18,7 +18,7 @@ const givetest = async(req, res) => {
         const is30MinPassed = (now - createdAt) >= THIRTY_MINUTES;
 
         if(is30MinPassed)
-            return res.status(401).json({status: false, message: "Time to give the test exceeded"})
+            return res.status(401).json({success: false, message: "Time to give the test exceeded"})
 
         const test = await generate();
         if(!test.questions || test.questions.length !== 5)
@@ -32,7 +32,8 @@ const givetest = async(req, res) => {
 
 const submitanswer = async(req, res) => {
     try {
-        const {answer, question, id} = req.body;
+	const id = req.user_id;
+        const {answer, question} = req.body;
         const user = await Addict.findById(id)
         if(!id || !user || !answer || !question)
             return res.status(404).json({status: false, message: "User not found"})
@@ -41,7 +42,9 @@ const submitanswer = async(req, res) => {
         if(!test || test.attempted) 
             return res.status(404).json({status: false, message: "No test requested"})
 
-        const nanswer = await scoretest(question, answer)
+        let nanswer = await scoreanswer(question, answer)
+
+        if (!Array.isArray(nanswer)) nanswer = [nanswer]
 
         let sum = 0;
         nanswer.forEach((ans, id) => {
@@ -61,7 +64,7 @@ const submitanswer = async(req, res) => {
 
 const storetest = async(req, res) => {
     try {
-        const {id} = req.body
+        const id = req.user_id;
         const user = await Addict.findById(id)
         
         if(!user || !id)
@@ -83,12 +86,11 @@ const storetest = async(req, res) => {
 
 const requesttest = async(req, res) => {
     try {
-        const {phone} = req.body;
-        const user = await Addict.findOne({phone})
-        if(!user || !phone)
+        const {user_id} = req.params;
+        if(!user_id)
             return res.status(404).json({status: false, message: "User not found"})
 
-        const test = new Test({alcoholic_id: user._id});
+        const test = new Test({alcoholic_id: user_id});
         await test.save()
 
         return res.status(200).json({status: true, test});

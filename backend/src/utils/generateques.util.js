@@ -37,18 +37,15 @@ const generate = async() => {
     Question ideas to draw from (vary every time):
     - Attention/Concentration:
     - Serial subtraction: subtract 7s or 3s from 100, 90, 80, etc. (ask for 4–5 steps)
-    - Count backwards from 20, 25, or 30 down to 1
-    - Spell a common 5-letter word backwards (WORLD, HOUSE, EARTH, TABLE, GRASS, etc.)
-    - Recite the months of the year backwards starting from December (first 6–8 months is enough)
-    - Recite the days of the week backwards
+    - Type the Counting backwards from 20, 25, or 30 down to 1
+    - Type a common 5-letter word backwards (WORLD, HOUSE, EARTH, TABLE, GRASS, etc.)
     - Memory:
     - 3 unrelated common words (vary themes: animals, objects, food, nature, etc.)
     - Other cognitive:
     - Simple arithmetic (e.g., "How many quarters are in $2.50?")
-    - Repeat a short sentence exactly
-
+     
     Use calm, professional, natural language. Significantly vary words, numbers, starting points, and phrasing each time for freshness.
-    Make all expected answers lowercase and tolerant for matching.`
+    Make all expected answers lowercase and tolerant for matching and Only generate text-based cognitive questions.`
 
     const result = await model.generateContent(prompt);
     const response = await result.response;

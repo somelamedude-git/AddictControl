@@ -1,11 +1,11 @@
-const Test = require('../models/Test.model');
+const {Test} = require('../models/Test.model');
 
 const fetch_past_results = async(req, res)=>{
-	let {limit} = req.body;
+	let {limit} = req.query;
 	limit = Math.min(Number(limit)||5, 10);
-	const user_id = req.user._id;
+	const user_id = req.user_id;
 	try{
-		const test_results = await Test.find({alcohol_id:user_id}).sort({createdAt:-1}).limit(limit);
+		const test_results = await Test.find({alcoholic_id:user_id}).sort({createdAt:-1}).limit(limit);
 		return res.status(200).json({
 			success: true,
 			test_results: test_results,

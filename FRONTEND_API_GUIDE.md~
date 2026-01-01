@@ -1,0 +1,305 @@
+# Frontend Developer API Guide
+*Quick reference for building the Santulan app frontend*
+
+## 🚀 Getting Started
+
+**Base URL**: `http://localhost:5000`  
+**WebSocket URL**: `ws://localhost:5000`
+
+## 🔐 Authentication
+
+### Login
+```http
+POST /login
+Content-Type: application/json
+
+{
+  "phone": "1234567890",     // OR email
+  "email": "user@email.com", // OR phone  
+  "password": "password123"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "role": "Addict|Family|Doctor",
+  "accessToken": "jwt_token_here",
+  "refreshToken": "refresh_token_here"
+}
+```
+
+**Use the accessToken in all subsequent requests:**
+```http
+Authorization: Bearer your_access_token_here
+```
+
+## 👥 User Roles
+
+- **Addict**: Takes tests, receives calls
+- **Family**: Monitors addict, requests calls  
+- **Doctor**: Registers users, manages system
+
+## 🧠 Cognitive Testing Flow
+
+### 1. Request a Test
+```http
+POST /test/request/USER_ID
+```
+*Creates a new test session (no auth needed)*
+
+### 2. Get Questions (within 30 minutes)
+```http
+POST /test/questions
+Authorization: Bearer token
+
+Response:
+{
+  "status": true,
+  "test": {
+    "questions": [
+      {
+        "id": 1,
+        "text": "Count backwards from 25 to 1",
+        "type": "attention",
+        "expected_sequence": ["25", "24", "23", ...]
+      }
+      // ... 4 more questions
+    ]
+  }
+}
+```
+
+### 3. Submit Each Answer
+```http
+POST /test/submit
+Authorization: Bearer token
+
+{
+  "question": { /* question object from step 2 */ },
+  "answer": "25 24 23 22 21..."
+}
+
+Response:
+{
+  "status": true,
+  "nanswer": {
+    "score": 2,
+    "max": 3,
+    "similarity": 0.85
+  }
+}
+```
+
+### 4. Complete Test
+```http
+POST /test/store
+Authorization: Bearer token
+
+Response:
+{
+  "status": true,
+  "test": { /* completed test with scores */ }
+}
+```
+
+### 5. View Past Results
+```http
+GET /test/see_results
+Authorization: Bearer token
+
+Response:
+{
+  "success": true,
+  "test_results": [
+    {
+      "logical_reasoning_score": 12,
+      "voice_score": 0.8,
+      "attempted": true,
+      "createdAt": "2024-01-01T10:00:00Z"
+    }
+  ]
+}
+```
+
+## 🎤 Voice Testing
+
+### Upload Audio File
+```http
+POST /test/voice-test
+Authorization: Bearer token
+Content-Type: multipart/form-data
+
+Form Data:
+- audio_file: [audio file]
+
+Response:
+{
+  "success": true,
+  "voice_score": 0.85
+}
+```
+
+## 📞 Family-Addict Communication
+
+### Request Call (Family → Addict)
+```http
+GET /calls/requestCall
+Authorization: Bearer family_token
+
+Response:
+{
+  "success": true,
+  "message": "Request for call sent"
+}
+```
+*This triggers a real-time notification to the addict*
+
+### Accept Call (Addict)
+```http
+GET /calls/acceptCall  
+Authorization: Bearer addict_token
+
+Response:
+{
+  "audio": "https://audio-link.com/test.wav"
+}
+```
+
+## 🔌 WebSocket Real-time Features
+
+### Connect to WebSocket
+```javascript
+const socket = io('ws://localhost:5000', {
+  auth: {
+    token: 'your_access_token'
+  }
+});
+
+// Listen for incoming calls (Addict)
+socket.on('incoming_call', (data) => {
+  console.log(data.message); // "Incoming call from family member"
+  console.log(data.caller_id); // Family member's ID
+  console.log(data.test); // true - indicates test required
+});
+
+// Handle authentication errors
+socket.on('auth_error', (error) => {
+  console.log('Auth failed:', error.message);
+});
+```
+
+## 📊 Response Formats
+
+### Success Response
+```json
+{
+  "success": true,
+  "data": { /* response data */ }
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "message": "Error description"
+}
+```
+
+## ⚠️ Important Rules
+
+### Test Rate Limiting
+- **3-hour cooldown** between tests
+- **Maximum 3 tests per day**
+- Family call requests check these limits automatically
+
+### Token Management
+- **Access tokens expire in 15 minutes**
+- **Refresh tokens expire in 15 days**
+- Store both securely on the client
+
+### File Uploads
+- **Audio files**: WAV format recommended
+- **Max file size**: Check with backend team
+- Files are automatically cleaned up after processing
+
+## 🎯 Common Workflows
+
+### Addict App Flow
+1. Login → Get access token
+2. Connect to WebSocket for call notifications
+3. When test requested → Get questions → Submit answers → Complete test
+4. Upload voice sample during test
+5. View past test results
+
+### Family App Flow  
+1. Login → Get access token
+2. Request call to addict (checks rate limits)
+3. Wait for addict to accept
+4. Monitor addict's test progress
+
+### Doctor App Flow
+1. Login → Get access token  
+2. Register new addicts and family members
+3. Monitor system usage
+
+## 🐛 Error Handling
+
+### Common Error Codes
+- **401**: Token expired or invalid
+- **404**: User/test not found
+- **429**: Rate limit exceeded (too many tests)
+- **500**: Server error
+
+### Retry Logic
+- **401 errors**: Refresh token or re-login
+- **429 errors**: Show user-friendly message about waiting
+- **500 errors**: Retry after delay
+
+## 🔧 Development Tips
+
+### Testing Authentication
+```javascript
+// Check if token is valid
+fetch('/test/see_results', {
+  headers: { 'Authorization': 'Bearer ' + token }
+})
+.then(response => {
+  if (response.status === 401) {
+    // Token expired, need to refresh or re-login
+  }
+});
+```
+
+### WebSocket Connection Management
+```javascript
+// Reconnect on disconnect
+socket.on('disconnect', () => {
+  setTimeout(() => socket.connect(), 1000);
+});
+```
+
+### File Upload with Progress
+```javascript
+const formData = new FormData();
+formData.append('audio_file', audioBlob);
+
+fetch('/test/voice-test', {
+  method: 'POST',
+  headers: { 'Authorization': 'Bearer ' + token },
+  body: formData
+});
+```
+
+## 📱 Mobile Considerations
+
+- All endpoints support CORS
+- WebSocket works on mobile browsers
+- File uploads work with device microphone
+- Tokens should be stored in secure storage
+
+---
+
+**Need help?** Check the backend logs or contact the backend team! 🚀
