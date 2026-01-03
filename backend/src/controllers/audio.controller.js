@@ -20,7 +20,6 @@ const process_audio = async(req, res)=>{
 
 		const s3Stream = s3Object.createReadStream();
 
-		const form = new FormData();
 		        form.append('file', s3Stream, {
 				            filename: req.file.originalname,
 				            contentType: req.file.contentType
