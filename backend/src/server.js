@@ -4,7 +4,6 @@ const { initSockets } = require('./sockets/index.js');
 const {getUserFromToken} = require('./utils/tokens.utils.js'); 
 const mongoose = require('mongoose');
 const { setSocketIO } = require('./utils/socket.util.js');
-require('./s3.js');
 const testroutes = require('./routes/test.routes');
 const authroutes = require('./routes/auth.routes');
 

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const {User} = require('../models/Users.model.js');
-
+require('dotenv').config({path:'../../.env'});
 const generateAccessToken =  (user) => {
     return jwt.sign(
         {id: user._id, role: user.role},

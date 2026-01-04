@@ -11,6 +11,6 @@ router.post('/submit',verifyJWT, submitanswer);
 router.post('/request/:user_id', requesttest);
 router.post('/store',verifyJWT, storetest)
 router.get('/see_results', verifyJWT, fetch_past_results);
-router.post('/voice-test', verifyJWT, upload.single('audio_file'), process_audio);
+//router.post('/voice-test', verifyJWT, upload.single('audio_file'), process_audio);
 
 module.exports = router;

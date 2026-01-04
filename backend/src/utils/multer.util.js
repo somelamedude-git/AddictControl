@@ -1,4 +1,4 @@
-const multer_s3 = require('multer-s3');
+/*const multer_s3 = require('multer-s3');
 const multer = require('multer');
 const { S3Client } = require('@aws-sdk/client-s3');
 
@@ -19,4 +19,4 @@ const upload = multer({
 
 module.exports = {
 	upload
-}
+}*/
