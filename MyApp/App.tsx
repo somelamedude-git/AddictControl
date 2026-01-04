@@ -20,7 +20,7 @@ export default function App() {
         if(!refreshToken) {
           return "Login";
         } else {
-          const response = await axios.post(`http://${ip}:5000/checklogin`, {
+          const response = await axios.post(`http://${ip}:5000/refresh`, {
             refreshToken 
           })
 
