@@ -48,8 +48,24 @@ const multi_purpose_login = async(req, res)=>{
 	}
 }
 
+const checklogin = async(req, res)=>{
+	try {
+		const {refreshToken} = req.body;
+		if(!refreshToken) return res.status(401).json({success: false, message: "No token provided"});
+		const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+		const user = await User.findById(payload.user_id);
+		if(!user) return res.status(401).json({success: false, message: "User doesnt exist"});
+		const access_token = generateAccessToken(user);
+		return res.status(200).json({success: true, accessToken: access_token});
+	} catch (err) {
+		console.log(err) 
+		return res.status(500).json({success: false, message: "Internal server error"});
+	}
+}
+
 module.exports = {
-	multi_purpose_login
+	multi_purpose_login,
+	checklogin
 }
 
 
