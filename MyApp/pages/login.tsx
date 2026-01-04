@@ -6,23 +6,36 @@ import { ip } from "../creds";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const LoginPage = () => {
-    const [phone, setPhone] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [formData, setFormData] = useState({
+        phone: '',
+        email: '',
+        password: ''    
+    });
 
-    const submitlogin = async () => {
+    const handlechange = (event: any) => {
+        const { name, value } = event.target;
+        setFormData((formData) => ({
+            ...formData,
+            [name]: value
+        }));
+    }
+
+    const handlesubmit = async (event: any) => {
         try {
+            event.preventDefault()
+
             const response = await axios.post(`http://${ip}:5000/login`, {
-                phone, email, password
+                phone: formData.phone,
+                email: formData.email,
+                password: formData.password
             })
 
-            const {role, refreshToken, accessToken} = response.data;
-            AsyncStorage.setItem('refreshToken', refreshToken);
-            AsyncStorage.setItem('accessToken', accessToken);
-            AsyncStorage.setItem('role', role);
-            console.log(response.data)
+            AsyncStorage.setItem('refreshToken', response.data.refreshToken);
+            AsyncStorage.setItem('accessToken', response.data.accessToken);
+            AsyncStorage.setItem('role', response.data.role);
 
-            //navigation based on user roles (to be done when other pages are added)---this comment is not written by ai (irritated face emoji)
+            //navigtion based on user role (to be done when other pages  are added)
+            console.log(response.data)
         } catch (err) {
             console.log(err)
         }
@@ -30,10 +43,10 @@ const LoginPage = () => {
 
     return (
         <View>
-        <TextInput placeholder="Phone" onChangeText={text => setPhone(text)} value={phone} keyboardType="numeric"/>
-        <TextInput placeholder="Email" onChangeText={text => setEmail(text)} value={email}/>
-        <TextInput placeholder="Password" onChangeText={text => setPassword(text)} value={password} secureTextEntry={true}/>
-        <Button title="Login" onPress={submitlogin}/>
+        <TextInput placeholder="Phone" onChangeText={handlechange} value={formData.phone} keyboardType="numeric"/>
+        <TextInput placeholder="Email" onChangeText={handlechange} value={formData.email}/>
+        <TextInput placeholder="Password" onChangeText={handlechange} value={formData.password} secureTextEntry={true}/>
+        <Button title="Login" onPress={handlesubmit}/>
         </View>
     )
 }
