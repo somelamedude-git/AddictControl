@@ -44,7 +44,29 @@ const profile_member = async(req, res)=>{
 	}
 }
 
+const logout = async(req, res)=>{
+        try{
+                const user_id = req.user_id;
+                const user = await User.findById(user_id.toString());
+                user.refreshToken = "";
+                await user.save();
+
+                return res.status(200).json({
+                        success: true,
+                        message: 'User logged out'
+                });
+        }
+        catch(err){
+                console.log(err);
+                return res.status(500).json({
+                        success: false,
+                        message: "Error logging out"
+                });
+        }
+}
+
 module.exports = {
 	profile_addict,
-	profile_member
+	profile_member,
+	logout
 }
