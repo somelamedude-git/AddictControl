@@ -1,8 +1,10 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ip } from '../creds';
+import { resetToLogin } from './navigation';
 
 const apiClient = axios.create({
-	  baseURL: 'very very cool placeholder'
+	  baseURL: `http://${ip}:5000/`
 });
 
 apiClient.interceptors.request.use(async (config)=>{
@@ -26,7 +28,7 @@ apiClient.interceptors.response.use(
 			originalRequest._retry = true;
 			try{
 				const refreshToken = await AsyncStorage.getItem('refreshToken');
-				const res = await axios.post('/refresh', { token: refreshToken });
+				const res = await apiClient.post('/refresh', { token: refreshToken });
 
 				const newAccessToken = res.data.newAccessToken;
 				await AsyncStorage.setItem('accessToken', newAccessToken);
@@ -36,9 +38,9 @@ apiClient.interceptors.response.use(
 
 				return apiClient(originalRequest);
 			}catch(err){
-				await AsyncStorage.remove('accessToken');
-				await AsyncStorage.remove('refreshToken');
-				// from here, we must add navigation back to the login page, idk the path
+				await AsyncStorage.removeItem('accessToken');
+				await AsyncStorage.removeItem('refreshToken');
+				resetToLogin()
 			}
 		}
 		return Promise.reject(error);
