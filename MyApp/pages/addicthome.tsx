@@ -1,9 +1,9 @@
-import { View} from "react-native";
+import { View, Text} from "react-native";
 
 const AddictHome = () => {
     return (
         <View>
-
+            <Text>Addict page</Text>
         </View>
     )
 }

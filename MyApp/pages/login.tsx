@@ -1,14 +1,30 @@
 import { View, TextInput, Button } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "../utils/intercept";
 
-const LoginPage = () => {
+const LoginPage = ({navigation}: any) => {
   const [formData, setFormData] = useState({
     phone: "",
     email: "",
     password: ""
   });
+
+  useEffect(() => {
+    const nav = async() => {
+      try {
+        const role = await AsyncStorage.getItem('role')
+        if (role?.toLowerCase() === 'addict')
+          navigation.navigate('AddictH')
+        else if(role?.toLowerCase() === 'family')
+          navigation.navigate('FamH')
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+    nav()
+  }, [])
 
   const handleChange = (field:any, value:any) => {
     setFormData(prev => ({

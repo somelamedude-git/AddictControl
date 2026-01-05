@@ -93,7 +93,7 @@ function RegistrationFamilyMember(){
 				)}
 
 				<TextInput
-					placeholder="phone",
+					placeholder="phone"
 					onChangeText = {value=>handleInputChange("phone", value)}
 					value={formData.phone}
 					keyboardType="numeric"
