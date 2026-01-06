@@ -15,9 +15,9 @@ const LoginPage = ({navigation}: any) => {
       try {
         const role = await AsyncStorage.getItem('role')
         if (role?.toLowerCase() === 'addict')
-          navigation.navigate('AddictH')
+          navigation.replace('AddictH')
         else if(role?.toLowerCase() === 'family')
-          navigation.navigate('FamH')
+          navigation.replace('FamH')
       } catch (err) {
         console.log(err)
       }
@@ -48,9 +48,9 @@ const LoginPage = ({navigation}: any) => {
       console.log("Login success:", response.data);
       const role = response.data.role
       if(role.toLowerCase() === 'addict')
-        navigation.navigate('AddictH')
+        navigation.replace('AddictH')
       else if(role.toLowerCase() === 'family')
-        navigation.navigate('FamH')
+        navigation.replace('FamH')
 
     } catch (err:any) {
       console.log("Login failed:", err.response?.data || err.message);

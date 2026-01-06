@@ -10,11 +10,11 @@ const Logoutcomp = ({navigation}:any) => {
             const response = await apiClient.post(`http://${ip}:5000/logout`)
             console.log(response.data)
             await AsyncStorage.multiRemove(['refreshToken', 'accessToken', 'role'])
-            navigation.navigate('Login')
+            navigation.replace('Login', {replace: true})
         } catch (err) {
             console.log(err)
             await AsyncStorage.multiRemove(['refreshToken', 'accessToken', 'role'])
-            navigation.navigate('Login')
+            navigation.replace('Login')
         }
     }
 
