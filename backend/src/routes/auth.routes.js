@@ -4,8 +4,9 @@ const {multi_purpose_login} = require('../controllers/login.controller.js');
 const { refresh } = require('../utils/tokens.utils.js');
 const { profile_addict, profile_member, logout } = require('../controllers/users.controllers.js');
 const {verifyJWT} = require('../middleware/auth.middleware.js');
+const { guest } = require('../middleware/guest.middleware.js');
 
-router.post('/login', multi_purpose_login);
+router.post('/login',guest, multi_purpose_login);
 router.post('/refresh', refresh);
 router.get('/profile_a', verifyJWT, profile_addict);
 router.get('/profile_b', verifyJWT, profile_member);

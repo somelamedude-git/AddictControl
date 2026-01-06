@@ -2,43 +2,43 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models/Users.model.js');
 const {getUserFromToken} = require('../utils/tokens.utils.js');
 
-const verifyJWT = async(req, res, next)=>{
-	const token = req.header("Authorization")?.replace("Bearer ", "");
-	if(!token){
+const verifyJWT = async(req, res, next)=>{ // protected auth
+	if(req.logged_in === false){
 		return res.status(401).json({
 			success: false,
-			message: "Token expired"
+			message: "User token expired"
 		});
+	}
+	return next();
+}
+
+const authGlobal = async(req, res, next)=>{
+	const token = req.header("Authorization")?.replace("Bearer ", "");
+	req.logged_in = false;
+	if(!token){
+		return next();
 	}
 
 	try{
 		const {id, role} = await getUserFromToken(token);
-		if(!id && !role){
-			return res.status(401).json({
-				success: false,
-				message: "Token error"
-			});
+		if(!id || !role){
+			return next();
 		}
+
 		req.user_id = id;
 		req.user_role = role;
-		next();
-	}
-	catch(err){
+		req.logged_in = true;
+
+		return next();
+	} catch(err){
 		console.log(err);
-		if(err.name==='TokenExpiredError'){
-			return res.status(401).json({
-				success: false,
-				message: "Token Expired"
-			});
-		}
-		return res.status(401).json({
-			success: false,
-			message: "Unauthorized access"
-		});
-		
+
+		return next();
 	}
 }
 
+
 module.exports = {
-	verifyJWT
+	verifyJWT,
+	authGlobal
 }

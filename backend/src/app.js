@@ -3,6 +3,7 @@ const app = express();
 require('dotenv').config()
 const compression = require('compression');
 const helmet = require('helmet');
+const { authGlobal } = require('./middleware/auth.middleware.js');
 
 app.use(express.json({
         limit: "10kb",
@@ -13,5 +14,7 @@ app.use(helmet({
 }));
 
 app.use(compression());
+
+app.use(authGlobal);
 
 module.exports = { app };
