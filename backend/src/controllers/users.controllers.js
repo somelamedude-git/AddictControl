@@ -45,7 +45,6 @@ const profile_member = async(req, res)=>{
 }
 
 const logout = async(req, res)=>{
-<<<<<<< HEAD
 	try{
 		const user_id = req.user_id;
 		const user = await User.findById(user_id.toString());
@@ -65,8 +64,6 @@ const logout = async(req, res)=>{
 		});
 	}
 }
-
-	
 
 module.exports = {
 	profile_addict,
