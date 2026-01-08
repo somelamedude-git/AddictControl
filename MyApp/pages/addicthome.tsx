@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { View, TextInput, Text } from "react-native";
 import axios from "axios";
+import Logoutcomp from "../components/logout";
 
 const Quotes = [
 	"Asking for help is really the beginning of any sort of recovery process",
@@ -18,7 +19,7 @@ const getRandom = (min:number, max:number)=>{
 	return random;
 }
 
-const AddictHome = ()=>{
+const AddictHome = ({navigation}:any)=>{
 	const [quote, setQuote] = useState('We appreciate you on taking a step forward!');
 	const [limit, setLimit] = useState(10);
 
@@ -59,6 +60,7 @@ const AddictHome = ()=>{
 			<View>
 				<Text>{quote}</Text>
 			</View>
+			<Logoutcomp navigation={navigation}/>
 			
 			<View>
 				{
