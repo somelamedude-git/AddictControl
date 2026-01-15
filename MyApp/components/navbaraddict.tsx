@@ -3,17 +3,17 @@ import { TouchableOpacity, View, Text } from "react-native"
 const NavbarAdd = ({navigation}:any) => {
     return(
         <View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.replace('AddictH')}>
                 <Text>
                     Home
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity>
                 <Text>
-                    Profile
+                    Tests
                 </Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.replace('ProfileA')}>
                 <Text>
                     Profile
                 </Text>
