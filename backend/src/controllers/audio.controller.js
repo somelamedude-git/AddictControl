@@ -41,6 +41,5 @@ const sendToSlurClient = async(req, res)=>{
 }
 
 module.exports = {
-	audioFile,
 	sendToSlurClient
 }
