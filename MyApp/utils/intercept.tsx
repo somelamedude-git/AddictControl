@@ -4,7 +4,7 @@ import { ip } from '../creds';
 import { resetToLogin } from './navigation';
 
 const apiClient = axios.create({
-	  baseURL: `http://${ip}:5000/`
+	  baseURL: `http://localhost:5000/`
 });
 
 apiClient.interceptors.request.use(async (config)=>{
@@ -31,7 +31,7 @@ apiClient.interceptors.response.use(
 				const refreshToken = await AsyncStorage.getItem('refreshToken');
 				const res = await apiClient.post('/refresh', { token: refreshToken });
 
-				const newAccessToken = res.data.newAccessToken;
+				const newAccessToken = res.data.accessToken;
 				await AsyncStorage.setItem('accessToken', newAccessToken);
 
 				originalRequest.headers = originalRequest.headers || {};

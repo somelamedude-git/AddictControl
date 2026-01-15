@@ -3,7 +3,6 @@ import Requesttest from "../components/requesttest";
 import Logoutcomp from "../components/logout";
 import { useEffect, useState } from "react";
 import apiClient from "../utils/intercept";
-import { ip } from "../creds";
 
 const FamHome = ({navigation}:any) => {
     const [formData, setformdata] = useState({
@@ -17,7 +16,7 @@ const FamHome = ({navigation}:any) => {
     useEffect(() => {
         const addictdata = async() => {
             try {
-                const response = await apiClient.post(`/users/addictdata`, {email: "agarwal@gmail.com"})
+                const response = await apiClient.post(`/users/addictdata`)
                 setformdata(response.data)
                 console.log(response.data)
             } catch(err) {
@@ -32,6 +31,8 @@ const FamHome = ({navigation}:any) => {
             <Text>Home page</Text>
             <Logoutcomp navigation={navigation}/>
             <Text>{formData.name}</Text>
+            <Text>{formData.sobriety}</Text>
+            <Text>{formData.age}</Text>
             <Requesttest />
         </View>
     )

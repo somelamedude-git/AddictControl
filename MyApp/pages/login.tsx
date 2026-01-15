@@ -35,7 +35,6 @@ const LoginPage = ({navigation}: any) => {
 
   const handleSubmit = async () => {
     try {
-      await AsyncStorage.clear()
       const response = await apiClient.post("/login", {
         phone: formData.phone,
         email: formData.email,
@@ -43,7 +42,6 @@ const LoginPage = ({navigation}: any) => {
       });
 
       await AsyncStorage.setItem("accessToken", response.data.accessToken);
-      await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
       await AsyncStorage.setItem("role", response.data.role);
 
       console.log("Login success:", response.data);
@@ -54,7 +52,7 @@ const LoginPage = ({navigation}: any) => {
         navigation.replace('FamH')
 
     } catch (err:any) {
-      console.log("Login failed:", err.response?.data || err.message);
+      console.log("Login failed:", err);
     }
   };
 

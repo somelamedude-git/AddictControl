@@ -1,9 +1,13 @@
-import { View, Text } from "react-native"
+import { View, Text, TouchableOpacity } from "react-native"
 
 export default function Requesttest () {
     return (
         <View>
-            <Text>Request test</Text>
+            <TouchableOpacity>
+                <Text>
+                    Request test
+                </Text>
+            </TouchableOpacity>
         </View>
     )
 }
