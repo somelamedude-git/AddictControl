@@ -1,22 +1,20 @@
 import { TouchableOpacity, View, Text } from "react-native"
 
-const Navbar = ({navigation}:any) => {
+const NavbarAdd = ({navigation}:any) => {
     return(
         <View>
-            <TouchableOpacity onPress={()=>navigation.replace('FamH')}>
+            <TouchableOpacity onPress={()=>navigation.replace('AddictH')}>
                 <Text>
                     Home
                 </Text>
             </TouchableOpacity>
-
-            <TouchableOpacity>
-                <Text onPress={() => navigation.replace('TestR')}>
+            <TouchableOpacity onPress={()=>navigation.replace('TestPortal')}>
+                <Text>
                     Tests
                 </Text>
             </TouchableOpacity>
-
-            <TouchableOpacity>
-                <Text onPress={() => navigation.replace('ProfileF')}>
+            <TouchableOpacity onPress={()=>navigation.replace('ProfileA')}>
+                <Text>
                     Profile
                 </Text>
             </TouchableOpacity>
@@ -24,4 +22,4 @@ const Navbar = ({navigation}:any) => {
     )
 }
 
-export default Navbar
+export default NavbarAdd

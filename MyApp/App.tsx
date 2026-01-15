@@ -7,6 +7,9 @@ import { navigationRef } from './utils/navigation';
 import AddictHome from './pages/addicthome';
 import FamHome from './pages/famhome';
 import TestResults from './pages/testresults';
+import ProfileF from './pages/profilefam';
+import ProfileA from './pages/profileadd';
+import { TestPortal } from './pages/testPortal';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +37,24 @@ export default function App() {
         <Stack.Screen  
           name="TestR"
           component={TestResults}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen  
+          name="ProfileF"
+          component={ProfileF}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen  
+          name="ProfileA"
+          component={ProfileA}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen  
+          name="TestPortal"
+          component={TestPortal}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
