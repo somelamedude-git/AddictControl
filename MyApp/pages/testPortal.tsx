@@ -2,6 +2,8 @@ import {useEffect, useState} from "react";
 import {View, Text, Button} from "react-native";
 import axios from "axios";
 import {checkAudioPermission} from "../utils/permissions";
+import NavbarAdd from "../components/navbaraddict";
+import { useAuthStore } from "../utils/state_utils/zust";
 
 export const TestPortal = ({navigation}: any)=>{
     const [testActive, setTestActive] = useState<boolean>(false);
@@ -11,6 +13,8 @@ export const TestPortal = ({navigation}: any)=>{
     const [audioPermissionGranted, setAudioPermissionGranted] = useState<boolean>(false);
 
     const boiler_plate_string = "Hello there, the person who has written this quote is super awesome and can beat bruce lee in a fight";
+
+    const accessToken = useAuthStore((state: any) => state.accessToken);
 
     useEffect(()=>{
         const checkPermission = async()=>{
@@ -37,7 +41,11 @@ export const TestPortal = ({navigation}: any)=>{
     }
 
     const onPress = async()=>{
-        const response = await axios.post('/get_questions');
+        const response = await axios.post('http://localhost:5000/get_questions', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
         if(!response.data.success){
             console.log("Could not fetch questions");
             return;
@@ -64,6 +72,7 @@ export const TestPortal = ({navigation}: any)=>{
       <Button title="Next" onPress={nextQuestion} />
     </View>
   )}
+  <NavbarAdd navigation={navigation} />
 </View>
     );
 }

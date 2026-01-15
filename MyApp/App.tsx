@@ -9,6 +9,7 @@ import FamHome from './pages/famhome';
 import TestResults from './pages/testresults';
 import ProfileF from './pages/profilefam';
 import ProfileA from './pages/profileadd';
+import { TestPortal } from './pages/testPortal';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,12 @@ export default function App() {
         <Stack.Screen  
           name="ProfileA"
           component={ProfileA}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen  
+          name="TestPortal"
+          component={TestPortal}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

@@ -8,7 +8,7 @@ const NavbarAdd = ({navigation}:any) => {
                     Home
                 </Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.replace('TestPortal')}>
                 <Text>
                     Tests
                 </Text>
