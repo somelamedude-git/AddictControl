@@ -41,7 +41,7 @@ export const TestPortal = ({navigation}: any)=>{
     }
 
     const onPress = async()=>{
-        const response = await axios.post('http://localhost:5000/get_questions', {
+        const response = await axios.post('http://localhost:5000/test/questions', {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
