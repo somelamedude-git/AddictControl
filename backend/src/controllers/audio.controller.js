@@ -1,57 +1,45 @@
-/*const fs = require('fs');
+const fs = require('fs');
+const path = require('path');
+const { convertToWav } = require('../utils/ffm.util.js');
 const FormData = require('form-data');
-const axios = require('axios');
-const { Test } = require('../models/Test.model.js');
-const s3 = require('../s3.js');
+import axios from 'axios';
 
-const process_audio = async(req, res)=>{
+const getOutputPath = (inputPath)=>{
+	const parsed = path.parse(inputPath);
+	return path.join(parsed.dir, parsed.name + '.wav');
+}
+const sendToSlurClient = async(req, res)=>{
+	const audioFilePath = req.file.path;
 	try{
-		const user_id = req.user_id;
+		const outputPath = getOutputPath(audioFilePath);
+	    await convertToWav(audioFilePath, outputPath);
 
-		const s3FileURL = req.file.location;
-		const s3Key = req.file.key;
-		const bucketName = req.file.bucket;
+		const form = new FormData();
+		form.append('file', fs.createReadStream(outputPath));
 
-		const s3Object = s3.getObject({
-			Bucket: bucketName,
-			Key: s3Key
+		const response = await axios.post('http://localhost:5000/predict', form, {
+			headers: {
+				...form.getHeaders()
+			}
 		});
 
-		const s3Stream = s3Object.createReadStream();
-
-		        form.append('file', s3Stream, {
-				            filename: req.file.originalname,
-				            contentType: req.file.contentType
-				        });
-
-		const response = await axios.post('/python_processing_api', form, {
-			headers:{
-				...form.getHeaders(),
-			},
-		});
-
-		const test = await Test.find({alcoholic_id: user_id}).sort({createdAt: -1}).limit(1);
-		if(test.length<1) return res.status(401).json({success: false, message: "Either test or the user doesnt exist"});
-		test[0].voice_score = response.data.prediction;
-		await test[0].save();
-		return res.status(200).json({
-			success: true,
-			voice_score: response.data.prediction
-		});
-	}
-	catch(err){
+		if(!response.data || !response.data.success){
+			return res.status(500).json({
+				success: false,
+				message: "Error processing audio"
+			});
+		}
+		else{
+			return res.status(200).json({
+				success: true,
+				prediction: response.data.prediction
+			})
+		}
+	} catch(err){
 		console.log(err);
-		return res.status(500).json({
-			success: false,
-			message: "Some internal server error"
-		});
 	}
 }
 
 module.exports = {
-	process_audio
-}*/
-
-
-
-
+	sendToSlurClient
+}

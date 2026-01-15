@@ -36,11 +36,11 @@ const submitanswer = async(req, res) => {
         const {answer, question} = req.body;
         const user = await Addict.findById(id)
         if(!id || !user || !answer || !question)
-            return res.status(404).json({status: false, message: "User not found"})
+            return res.status(404).json({success: false, message: "User not found"})
 
         const test = await Test.findOne({alcoholic_id: id}).sort({createdAt:-1})
         if(!test || test.attempted) 
-            return res.status(404).json({status: false, message: "No test requested"})
+            return res.status(404).json({success: false, message: "No test requested"})
 
         let nanswer = await scoreanswer(question, answer)
 
@@ -54,11 +54,11 @@ const submitanswer = async(req, res) => {
         test.logical_reasoning_score += sum;
 
         await test.save()
-        return res.status(200).json({status: true, nanswer, sum})
+        return res.status(200).json({success: true, nanswer, sum})
 
     } catch (err) {
         console.log(err)
-        return res.status(500).json({status: false, message: "Internal server error"})
+        return res.status(500).json({success: false, message: "Internal server error"})
     }
 }
 
