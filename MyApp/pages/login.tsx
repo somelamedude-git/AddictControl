@@ -36,7 +36,7 @@ const LoginPage = ({navigation}: any) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("http:/localhost:5000/login", {
+      const response = await axios.post("http://localhost:5000/login", {
         phone: formData.phone,
         email: formData.email,
         password: formData.password

@@ -39,7 +39,7 @@ const AddictHome = ({navigation}:any)=>{
 	useEffect(()=>{
 		const loadData = async()=>{
 			try{
-				const response = await axios.get('/see_results', {
+				const response = await axios.get('http://localhost:5000/see_results', {
 					params:{
 						limit: limit
 					},

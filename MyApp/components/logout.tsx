@@ -9,7 +9,7 @@ const Logoutcomp = ({ navigation, ip }: any) => {
   const handleLogout = async () => {
     try {
       const response = await axios.post(
-        `http://${ip}:5000/logout`,
+        `http://]localhost:5000/logout`,
         {}, 
         {
           headers: {
