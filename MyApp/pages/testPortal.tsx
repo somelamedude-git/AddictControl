@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {View, Text, Button} from "react-native";
 import axios from "axios";
 import {checkAudioPermission} from "../utils/permissions";
+import { useAuthStore } from "../utils/state_utils/zust";
 
 export const TestPortal = ({navigation}: any)=>{
     const [testActive, setTestActive] = useState<boolean>(false);
@@ -9,6 +10,8 @@ export const TestPortal = ({navigation}: any)=>{
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
     const [voiceTestValid, setVoiceTestValid] = useState<boolean>(false);
     const [audioPermissionGranted, setAudioPermissionGranted] = useState<boolean>(false);
+    const [currentScore, setCurrentScore] = useState<number>(0);
+    const [currentAnswer, setCurrentAnswer] = useState<string>("");
 
     const boiler_plate_string = "Hello there, the person who has written this quote is super awesome and can beat bruce lee in a fight";
 
@@ -36,8 +39,31 @@ export const TestPortal = ({navigation}: any)=>{
         }
     }
 
+    const submitAnswer = async()=>{
+        const answer = currentAnswer;
+        const response = await axios.post('http://localhost:5000/test/submit_answer', {
+            question: questions[currentQuestionIndex],
+            answer: answer
+        });
+
+        if(response.data.success){
+            setCurrentScore(prev=>prev+response.data.sum);
+            nextQuestion();
+        }
+    }
+
     const onPress = async()=>{
-        const response = await axios.post('/get_questions');
+        const accessToken = useAuthStore((state:any)=>state.accessToken);
+        if(!accessToken){
+            console.log('access token not found');
+            // lead to login, navigate over here
+        }
+        const response = await axios.post('http://localhost:5000/test/questions', {}, {
+            headers:{
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
         if(!response.data.success){
             console.log("Could not fetch questions");
             return;
@@ -53,12 +79,16 @@ export const TestPortal = ({navigation}: any)=>{
   ) : (
     <View>
       {questions[currentQuestionIndex] && (
+        <>
         <Text>{questions[currentQuestionIndex].question_text}</Text>
+        <Button title="Record Answer" onPress={submitAnswer}/> 
+        </>  
       )}
 
       {voiceTestValid && audioPermissionGranted && (
+        <>
         <Text>{boiler_plate_string}</Text>
-        
+        </>
       )}
       <Button title="Previous" onPress={prevQuestion} />
       <Button title="Next" onPress={nextQuestion} />

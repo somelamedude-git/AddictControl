@@ -13,6 +13,8 @@ app.use(helmet({
     referrerPolicy: {policy: 'no-referrer'},
 }));
 
+app.use(express.urlencoded({extended: true, limit: "10kb"}));
+
 app.use(compression());
 
 app.use(authGlobal);
