@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import {View, Text} from "react-native";
 import { Audio } from 'expo-av';
-import { OutputFormatAndroidType } from "react-native-nitro-sound";
 
 export const VoiceRecorder = ()=>{
     const [recording, setRecording] = useState<Audio.Recording | null>(null);
