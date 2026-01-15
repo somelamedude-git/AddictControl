@@ -10,6 +10,8 @@ export const TestPortal = ({navigation}: any)=>{
     const [voiceTestValid, setVoiceTestValid] = useState<boolean>(false);
     const [audioPermissionGranted, setAudioPermissionGranted] = useState<boolean>(false);
 
+    const boiler_plate_string = "Hello there, the person who has written this quote is super awesome and can beat bruce lee in a fight";
+
     useEffect(()=>{
         const checkPermission = async()=>{
             await checkAudioPermission();
@@ -55,7 +57,8 @@ export const TestPortal = ({navigation}: any)=>{
       )}
 
       {voiceTestValid && audioPermissionGranted && (
-        <Text>Voice Test Validated!</Text>
+        <Text>{boiler_plate_string}</Text>
+        
       )}
       <Button title="Previous" onPress={prevQuestion} />
       <Button title="Next" onPress={nextQuestion} />
