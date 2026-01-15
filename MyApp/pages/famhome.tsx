@@ -21,7 +21,7 @@ const accessToken = useAuthStore((state: any) => state.accessToken);
         const addictdata = async() => {
             try {
                const response = await axios.post(
-  'http/localhost:5000/get_addict_data',  
+  'http://localhost:5000/users/addictdata',  
   {},                  
   {
     headers: {
