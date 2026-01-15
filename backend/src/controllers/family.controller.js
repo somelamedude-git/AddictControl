@@ -2,7 +2,7 @@ const { Doctor, Addict, Family} = require('../models/Users.model.js');
 const { send_mail } = require('../utils/mail.utils.js');
 
 const registration_family = async(req, res)=>{
-	const user_id = req.user._id;
+	const user_id = req.user_id;
 	try{
 		const is_doctor = await Doctor.findById(user_id);
 		let { addict_email, member_phone_number, password, name, member_email } = req.body;
@@ -63,7 +63,7 @@ const registration_family = async(req, res)=>{
 }
 
 const addict_registration = async(req, res)=>{
-	const user_id = req.user._id;
+	const user_id = req.user_id;
 
 	try{
 		const isDoctor = await Doctor.findById(user_id);
