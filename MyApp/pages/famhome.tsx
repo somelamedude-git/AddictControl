@@ -2,8 +2,9 @@ import { View, Text } from "react-native";
 import Requesttest from "../components/requesttest";
 import Logoutcomp from "../components/logout";
 import { useEffect, useState } from "react";
-import apiClient from "../utils/intercept";
 import Navbar from "../components/navbar";
+import axios from "axios";
+import { useAuthStore } from "../utils/state_utils/zust";
 
 const FamHome = ({navigation}:any) => {
     const [formData, setformdata] = useState({
@@ -12,20 +13,30 @@ const FamHome = ({navigation}:any) => {
         phone: '',
         sobriety: -1,
         age: 0
-    })
+    });
+
+const accessToken = useAuthStore((state: any) => state.accessToken);
 
     useEffect(() => {
         const addictdata = async() => {
             try {
-                const response = await apiClient.post(`/users/addictdata`)
-                setformdata(response.data)
-                console.log(response.data)
+               const response = await axios.post(
+  'http/localhost:5000/get_addict_data',  
+  {},                  
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  }
+);
+                setformdata(response.data);
+                console.log(response.data);
             } catch(err) {
-                console.log(err)
+                console.log(err);
             }
         }
-        addictdata()
-    }, [])
+        addictdata();
+    }, [accessToken])
 
     return (
         <View>
@@ -40,4 +51,4 @@ const FamHome = ({navigation}:any) => {
     )
 }
 
-export default FamHome
+export default FamHome;

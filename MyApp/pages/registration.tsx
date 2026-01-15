@@ -3,7 +3,7 @@ import {View, TextInput, Alert, Text, Button} from "react-native";
 import axios from "axios";
 import validator from "validator";
 
-function RegistrationFamilyMember(){
+export function RegistrationFamilyMember(){
 	const [formData, setFormData] = useState<{
 		email: string;
 		password: string;
@@ -146,7 +146,7 @@ function RegistrationFamilyMember(){
 	);
 }
 
-function RegistrationAddict(){
+export function RegistrationAddict(){
 	const [formData, setFormData] = useState<{
 		phone: string;
 		email: string;
@@ -275,10 +275,3 @@ function RegistrationAddict(){
 		</View>
 	);
 }
-			
-			
-export default RegistrationFamilyMember;
-
-
-
-

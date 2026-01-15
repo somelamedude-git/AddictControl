@@ -1,7 +1,8 @@
 import { View, TextInput, Button } from "react-native";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import apiClient from "../utils/intercept";
+import axios from "axios";
+import { useAuthStore } from "../utils/state_utils/zust";
 
 const LoginPage = ({navigation}: any) => {
   const [formData, setFormData] = useState({
@@ -35,13 +36,15 @@ const LoginPage = ({navigation}: any) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await apiClient.post("/login", {
+      const response = await axios.post("http:/localhost:5000/login", {
         phone: formData.phone,
         email: formData.email,
         password: formData.password
       });
 
       await AsyncStorage.setItem("accessToken", response.data.accessToken);
+      useAuthStore.setState({accessToken: response.data.accessToken});
+      await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
       await AsyncStorage.setItem("role", response.data.role);
 
       console.log("Login success:", response.data);

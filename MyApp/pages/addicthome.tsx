@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { View, TextInput, Text } from "react-native";
 import axios from "axios";
 import Logoutcomp from "../components/logout";
+import { useAuthStore } from "../utils/state_utils/zust";
 
 const Quotes = [
 	"Asking for help is really the beginning of any sort of recovery process",
@@ -22,7 +23,7 @@ const getRandom = (min:number, max:number)=>{
 const AddictHome = ({navigation}:any)=>{
 	const [quote, setQuote] = useState('We appreciate you on taking a step forward!');
 	const [limit, setLimit] = useState(10);
-
+	const accessToken = useAuthStore((state: any) => state.accessToken);
 	
 	useEffect(()=>{
 		const max:number = Quotes.length;
@@ -41,6 +42,9 @@ const AddictHome = ({navigation}:any)=>{
 				const response = await axios.get('/see_results', {
 					params:{
 						limit: limit
+					},
+					headers:{
+						Authorization: `Bearer ${accessToken}`
 					}
 				});
 
@@ -49,11 +53,12 @@ const AddictHome = ({navigation}:any)=>{
 			} 
 			catch(err){
 				console.log(err); // add some ui there
+				// lead to login page here
 			}
 		}
 
 		loadData();
-	}, [limit]);
+	}, [limit, accessToken]);
 
 	return (
 		<View>
@@ -76,4 +81,4 @@ const AddictHome = ({navigation}:any)=>{
 
 }
 
-export default AddictHome
+export default AddictHome;
