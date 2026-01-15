@@ -6,6 +6,7 @@ import LoginPage from './pages/login';
 import { navigationRef } from './utils/navigation';
 import AddictHome from './pages/addicthome';
 import FamHome from './pages/famhome';
+import TestResults from './pages/testresults';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,12 @@ export default function App() {
           name="FamH"
           component={FamHome}
           options={{ headerShown: false }}
+        />
+
+        <Stack.Screen  
+          name="TestR"
+          component={TestResults}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>

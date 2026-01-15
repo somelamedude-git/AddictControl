@@ -3,6 +3,7 @@ import Requesttest from "../components/requesttest";
 import Logoutcomp from "../components/logout";
 import { useEffect, useState } from "react";
 import apiClient from "../utils/intercept";
+import Navbar from "../components/navbar";
 
 const FamHome = ({navigation}:any) => {
     const [formData, setformdata] = useState({
@@ -34,6 +35,7 @@ const FamHome = ({navigation}:any) => {
             <Text>{formData.sobriety}</Text>
             <Text>{formData.age}</Text>
             <Requesttest />
+            <Navbar navigation={navigation}/>
         </View>
     )
 }
