@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {View, TextInput, Alert, Text} from "react-native";
+import {View, TextInput, Alert, Text, Button} from "react-native";
 import axios from "axios";
 import validator from "validator";
 
@@ -7,6 +7,7 @@ function RegistrationFamilyMember(){
 	const [formData, setFormData] = useState<{
 		email: string;
 		password: string;
+		phone: string;
 		name: string;
 		addict_email: string;}>
 	({
@@ -144,9 +145,139 @@ function RegistrationFamilyMember(){
 		</View>
 	);
 }
-			
-			
 
+function RegistrationAddict(){
+	const [formData, setFormData] = useState<{
+		phone: string;
+		email: string;
+		password: string;
+		name: string;
+		age: string;
+	}>({
+		phone: '',
+		email: '',
+		password: '',
+		name: '',
+		age: '' // will keep age as a string, will parse in backend
+	});
+
+	const [error, setError] = useState<string>('');
+	const [repassword, setRepassword] = useState<string>('');
+	const [errorType, setErrorType] = useState<string>('');
+
+	const handleInputChange = (name: string, value: any)=>{ 
+		setFormData(prev=>({
+			...prev,
+			[name]: value
+		}));
+	};
+
+	const register = async()=>{
+		try{
+			if(!validator.isEmail(formData.email)){
+				setError('Please enter a valid email');
+				setErrorType('invalidEmail');
+				return;
+			}
+
+			if(Number(formData.age)<18){
+				setError('Age below limit');
+				setErrorType('ageLimit');
+				return;
+			}
+
+			if(repassword != formData.password){
+				setError('Passwords do not match');
+				setErrorType('mismatchPassword');
+				return;
+			}
+
+			if(formData.phone && formData.age && formData.email && formData.password){
+				const response = await axios.post("/api/registerAddict", {
+					phone: formData.phone,
+					email: formData.email,
+					password: formData.password,
+					name: formData.name,
+					age: formData.age
+				});
+
+				if(response.data.success){
+					// send a success modal over here
+				}
+		}
+			else{
+					// throw in a react toaster
+			}
+	} catch(err){
+		console.log(err);
+	}
+}
+	return(
+		<View>
+			<View>
+				<TextInput
+					placeholder="phone"
+					onChangeText = {value=>handleInputChange("phone", value)}
+					value={formData.phone}
+					keyboardType="numeric"
+				/>
+				<TextInput
+					placeholder="name"
+					onChangeText = {value=>handleInputChange("name",value)}
+					value={formData.name}
+				/>
+			</View>
+			<View>	
+				<TextInput
+					placeholder="email"
+					onChangeText={value=>handleInputChange("email", value)}
+					value={formData.email}
+					keyboardType="email-address"
+					autoCapitalize="none"
+				/>
+				{errorType==="invalidEmail" && (
+					<Text>{error}</Text>
+				)}
+				<TextInput
+					placeholder="age"
+					onChangeText={value=>handleInputChange("age", value)}
+					value={formData.age}
+					keyboardType="numeric"
+				/>
+				{errorType==="ageLimit" && (
+					<Text>{error}</Text>
+				)}
+			</View>
+			<View>
+				<TextInput
+					placeholder="password"
+					onChangeText={value=>handleInputChange("password", value)}
+					value={formData.password}
+					secureTextEntry={true}
+				/>
+				<TextInput
+					placeholder="re-enter password"
+					onChangeText={value=>setRepassword(value)}
+					value={repassword}
+					secureTextEntry={true}
+				/>
+				{errorType==="mismatchPassword" && (
+					<Text>{error}</Text>
+				)}
+			</View>
+
+			<View>
+				<Button
+					title="Register Addict"
+					onPress = {register}
+				/>
+			</View>
+		</View>
+	);
+}
+			
+			
+export default RegistrationFamilyMember;
 
 
 
