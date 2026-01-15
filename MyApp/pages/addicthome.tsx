@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, TextInput, Text } from "react-native";
+import { View, TextInput, Text, TouchableOpacity } from "react-native";
 import axios from "axios";
 import Logoutcomp from "../components/logout";
 import { useAuthStore } from "../utils/state_utils/zust";
@@ -39,7 +39,7 @@ const AddictHome = ({navigation}:any)=>{
 	useEffect(()=>{
 		const loadData = async()=>{
 			try{
-				const response = await axios.get('http://localhost:5000/see_results', {
+				const response = await axios.get('http://localhost:5000/test/see_results', {
 					params:{
 						limit: limit
 					},
@@ -71,7 +71,10 @@ const AddictHome = ({navigation}:any)=>{
 				{
 					testResults.map((test:any)=>(
 						<View>
+							<Text>{test.attempted?"Done":"Not Done"}</Text>
 							<Text>{test.overall_score}</Text>
+							<Text>{test.logical_reasoning_score}</Text>
+							<Text>{test.voice_score}</Text>
 						</View>
 					))
 				}
