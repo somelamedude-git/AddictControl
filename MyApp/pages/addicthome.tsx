@@ -3,6 +3,7 @@ import { View, TextInput, Text, TouchableOpacity } from "react-native";
 import axios from "axios";
 import Logoutcomp from "../components/logout";
 import { useAuthStore } from "../utils/state_utils/zust";
+import NavbarAdd from "../components/navbaraddict";
 
 const Quotes = [
 	"Asking for help is really the beginning of any sort of recovery process",
@@ -79,6 +80,8 @@ const AddictHome = ({navigation}:any)=>{
 					))
 				}
 			</View>
+
+			<NavbarAdd navigation={navigation}/>
 		</View>
 	)
 
