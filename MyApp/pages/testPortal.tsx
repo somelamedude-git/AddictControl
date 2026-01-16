@@ -1,32 +1,17 @@
 import { useEffect, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
-import axios from "axios";
-import { checkAudioPermission } from "../utils/permissions";
 import NavbarAdd from "../components/navbaraddict";
 import { useAuthStore } from "../utils/state_utils/zust";
-import { ShowVoicePage } from "../components/audio";
 
 export const TestPortal = ({ navigation }: any) => {
   const [testActive, setTestActive] = useState<boolean>(false);
   const [questions, setQuestions] = useState<Array<any>>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [voiceTestValid, setVoiceTestValid] = useState<boolean>(false);
-  const [audioPermissionGranted, setAudioPermissionGranted] =
-    useState<boolean>(false);
   const [cognitionScore, setCognitionScore] = useState<number>(0);
-  const [audioScore, setAudioScore] = useState<number>(0);
+//   const [audioScore, setAudioScore] = useState<number>(0);
   const [currentAnswer, setCurrentAnswer] = useState<string>("");
-
-  const boiler_plate_string =
-    "Hello there, the person who has written this quote is super awesome and can beat bruce lee in a fight";
-
-  useEffect(() => {
-    const checkPermission = async () => {
-      await checkAudioPermission();
-      setAudioPermissionGranted(true);
-    };
-    checkPermission();
-  }, []);
+  const accessToken = useAuthStore((state: any) => state.accessToken);
 
   const nextQuestion = () => {
     if (currentQuestionIndex === questions.length - 1) {
@@ -45,47 +30,56 @@ export const TestPortal = ({ navigation }: any) => {
   };
 
   const submitAnswer = async () => {
-    const answer = currentAnswer;
-    const response = await axios.post(
-      "http://localhost:5000/test/submit_answer",
-      {
-        question: questions[currentQuestionIndex],
-        answer: answer,
-      }
-    );
+    try {
+      const answer = currentAnswer;
 
-    if (response.data.success) {
-      setCognitionScore((prev) => prev + response.data.sum);
-      nextQuestion();
+      const response = await fetch("http://localhost:5000/test/submit_answer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question: questions[currentQuestionIndex],
+          answer: answer,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setCognitionScore((prev) => prev + data.sum);
+        nextQuestion();
+      }
+    } catch (err) {
+      console.log("Error submitting answer:", err);
     }
   };
 
   const onPress = async () => {
     try {
-      const accessToken = useAuthStore((state: any) => state.accessToken);
-
       if (!accessToken) {
         console.log("access token not found");
         return;
       }
 
-      const response = await axios.post(
-        "http://localhost:5000/test/questions",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await fetch("http://localhost:5000/test/questions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({}),
+      });
 
-      if (!response.data.success) {
+      const data = await response.json();
+
+      if (!data.success) {
         console.log("Could not fetch questions");
         return;
       }
 
       setTestActive(true);
-      setQuestions(response.data.test);
+      setQuestions(data.test);
     } catch (err) {
       console.log(err);
     }
@@ -99,21 +93,12 @@ export const TestPortal = ({ navigation }: any) => {
         <View>
           {questions[currentQuestionIndex] && (
             <>
-              <Text>
-                {questions[currentQuestionIndex].question_text}
-              </Text>
+              <Text>{questions[currentQuestionIndex].question_text}</Text>
 
-              <TextInput
-                value={currentAnswer}
-                onChangeText={setCurrentAnswer}
-              />
+              <TextInput value={currentAnswer} onChangeText={setCurrentAnswer} />
 
               <Button title="Submit Answer" onPress={submitAnswer} />
             </>
-          )}
-
-          {voiceTestValid && audioPermissionGranted && (
-            <ShowVoicePage />
           )}
 
           <Button title="Previous" onPress={prevQuestion} />
@@ -125,3 +110,4 @@ export const TestPortal = ({ navigation }: any) => {
     </View>
   );
 };
+
