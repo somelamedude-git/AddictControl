@@ -10,6 +10,9 @@ import TestResults from './pages/testresults';
 import ProfileF from './pages/profilefam';
 import ProfileA from './pages/profileadd';
 import { TestPortal } from './pages/testPortal';
+import RegistrationPage from './pages/registration';
+
+import SplashScreen from './pages/splash';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,10 +20,20 @@ export default function App() {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName='Login'>
+      <Stack.Navigator initialRouteName='Splash'>
+        <Stack.Screen
+          name="Splash"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Login"
           component={LoginPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Registration"
+          component={RegistrationPage}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -34,28 +47,28 @@ export default function App() {
           options={{ headerShown: false }}
         />
 
-        <Stack.Screen  
+        <Stack.Screen
           name="TestR"
           component={TestResults}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
 
-        <Stack.Screen  
+        <Stack.Screen
           name="ProfileF"
           component={ProfileF}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
 
-        <Stack.Screen  
+        <Stack.Screen
           name="ProfileA"
           component={ProfileA}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
 
-        <Stack.Screen  
+        <Stack.Screen
           name="TestPortal"
           component={TestPortal}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
