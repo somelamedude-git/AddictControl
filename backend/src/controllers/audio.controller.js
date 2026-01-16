@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { convertToWav } = require('../utils/ffm.util.js');
 const FormData = require('form-data');
-import axios from 'axios';
+const axios = require('axios');
 
 const getOutputPath = (inputPath)=>{
 	const parsed = path.parse(inputPath);
