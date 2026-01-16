@@ -1,9 +1,10 @@
 import {useEffect, useState} from "react";
-import {View, Text, Button} from "react-native";
+import {View, Text, Button, TextInput} from "react-native";
 import axios from "axios";
 import {checkAudioPermission} from "../utils/permissions";
 import NavbarAdd from "../components/navbaraddict";
 import { useAuthStore } from "../utils/state_utils/zust";
+import {ShowVoicePage} from "../components/audio";
 
 export const TestPortal = ({navigation}: any)=>{
     const [testActive, setTestActive] = useState<boolean>(false);
@@ -11,12 +12,11 @@ export const TestPortal = ({navigation}: any)=>{
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
     const [voiceTestValid, setVoiceTestValid] = useState<boolean>(false);
     const [audioPermissionGranted, setAudioPermissionGranted] = useState<boolean>(false);
-    const [currentScore, setCurrentScore] = useState<number>(0);
+    const [cognitionScore, setCognitionScore] = useState<number>(0);
+    const [audioScore, setAudioScore] = useState<number>(0);
     const [currentAnswer, setCurrentAnswer] = useState<string>("");
 
     const boiler_plate_string = "Hello there, the person who has written this quote is super awesome and can beat bruce lee in a fight";
-
-    const accessToken = useAuthStore((state: any) => state.accessToken);
 
     useEffect(()=>{
         const checkPermission = async()=>{
@@ -50,28 +50,30 @@ export const TestPortal = ({navigation}: any)=>{
         });
 
         if(response.data.success){
-            setCurrentScore(prev=>prev+response.data.sum);
+            setCognitionScore(prev=>prev+response.data.sum);
             nextQuestion();
         }
     }
 
-    const onPress = async()=>{
-        const accessToken = useAuthStore((state:any)=>state.accessToken);
-        if(!accessToken){
-            console.log('access token not found');
-            // lead to login, navigate over here
-        }
-        const response = await axios.post('http://localhost:5000/test/questions', {}, {
-            headers:{
-                Authorization: `Bearer ${accessToken}`
-            }
-        });
+    const onPress = async () => {
+  try {
+    const accessToken = useAuthStore((state: any) => state.accessToken);
 
-        const response = await axios.post('http://localhost:5000/test/questions', {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        });
+    if (!accessToken) {
+      console.log('access token not found');
+      return;
+    }
+
+    const resp = await axios.post(
+      'http://localhost:5000/test/questions',
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
         if(!response.data.success){
             console.log("Could not fetch questions");
             return;
@@ -94,10 +96,10 @@ export const TestPortal = ({navigation}: any)=>{
       )}
 
       {voiceTestValid && audioPermissionGranted && (
-        <>
-        <Text>{boiler_plate_string}</Text>
-        </>
-      )}
+  <ShowVoicePage
+  />
+)}
+
       <Button title="Previous" onPress={prevQuestion} />
       <Button title="Next" onPress={nextQuestion} />
     </View>
